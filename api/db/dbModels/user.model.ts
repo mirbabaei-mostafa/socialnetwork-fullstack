@@ -1,4 +1,6 @@
-import mongoose, { Schema, model, connect, Types, ObjectId } from 'mongoose';
+import { NextFunction } from "express";
+import bcrypt from "bcrypt";
+import mongoose, { Schema, model, connect, Types, ObjectId } from "mongoose";
 
 const { ObjectId } = mongoose.Schema;
 
@@ -69,25 +71,26 @@ const userSchema = new Schema<UserSchema>(
     password: {
       type: String,
       require: true,
+      trim: true,
     },
     image: {
       type: String,
-      default: 'public/images/avatar-default.png',
+      default: "public/images/avatar-default.png",
       require: false,
     },
     avatar: {
       type: String,
-      default: 'public/images/avatar-default.png',
+      default: "public/images/avatar-default.png",
       require: false,
     },
     cover: {
       type: String,
-      default: 'public/images/cover-default.png',
+      default: "public/images/cover-default.png",
       require: false,
     },
     gender: {
       type: String,
-      enum: ['Not Known', 'Male', 'Female', 'Indeterminate'],
+      enum: ["Not Known", "Male", "Female", "Indeterminate"],
       require: true,
       trim: true,
       text: true,
@@ -132,7 +135,7 @@ const userSchema = new Schema<UserSchema>(
       {
         user: {
           type: ObjectId,
-          ref: 'users',
+          ref: "users",
         },
       },
     ],
@@ -140,7 +143,7 @@ const userSchema = new Schema<UserSchema>(
       {
         post: {
           type: ObjectId,
-          ref: 'posts',
+          ref: "posts",
         },
         saved_at: {
           type: Date,
@@ -191,7 +194,7 @@ const userSchema = new Schema<UserSchema>(
       },
       relationship: {
         type: String,
-        enum: ['Single', 'In relationship', 'Married', 'Divorced'],
+        enum: ["Single", "In relationship", "Married", "Divorced"],
         trim: true,
         text: true,
       },
@@ -216,6 +219,19 @@ const userSchema = new Schema<UserSchema>(
   { timestamps: true }
 );
 
-const Users = model<UserSchema>('users', userSchema);
+userSchema.pre("save", async function (next: NextFunction) {
+  // const user = this as UserSchema & { _id: Types.ObjectId };
+  const user = this;
+  if (user.isModified("password")) {
+    try {
+      const salt: string = await bcrypt.genSalt(12);
+      user.password = await bcrypt.hash(user.password, salt);
+    } catch (err) {}
+  } else {
+    next();
+  }
+});
+
+const Users = model<UserSchema>("users", userSchema);
 
 export default Users;

@@ -20,3 +20,12 @@ mongoose.connection.once("open", () => {
 app.use(express.json());
 
 app.use("/api/register", registerRouter);
+
+app.use((err: any, req: Request, res: Response, next: NextFunction) => {
+  console.log(err);
+  const errStatus: number = err.status || 500;
+  const errMessage: string = err.message || "InternalServerError";
+  return res
+    .status(errStatus)
+    .send({ success: false, message: errMessage, status: errStatus });
+});
