@@ -1,7 +1,7 @@
-import userModel from "./userModel";
-import dotenv from "dotenv";
-import bcrypt from "bcrypt";
-import mongoose, { Schema, model, connect, Types, ObjectId } from "mongoose";
+import userModel from './userModel';
+import dotenv from 'dotenv';
+import bcrypt from 'bcrypt';
+import mongoose, { Schema, model, connect, Types, ObjectId } from 'mongoose';
 
 dotenv.config();
 
@@ -12,7 +12,7 @@ export interface UserSchema extends mongoose.Document {
   lname: string;
   email: string;
   username: string;
-  createUserName();
+  createUserName(): void;
   password: string;
   comparePassword(candidatePassword: string): Promise<boolean>;
   image: string;
@@ -88,22 +88,22 @@ const userSchema = new Schema<UserSchema>(
     },
     image: {
       type: String,
-      default: "public/images/avatar-default.png",
+      default: 'public/images/avatar-default.png',
       require: false,
     },
     avatar: {
       type: String,
-      default: "public/images/avatar-default.png",
+      default: 'public/images/avatar-default.png',
       require: false,
     },
     cover: {
       type: String,
-      default: "public/images/cover-default.png",
+      default: 'public/images/cover-default.png',
       require: false,
     },
     gender: {
       type: String,
-      enum: ["Not Known", "Male", "Female", "Indeterminate"],
+      enum: ['Not Known', 'Male', 'Female', 'Indeterminate'],
       require: true,
       trim: true,
       text: true,
@@ -148,7 +148,7 @@ const userSchema = new Schema<UserSchema>(
       {
         user: {
           type: ObjectId,
-          ref: "users",
+          ref: 'users',
         },
       },
     ],
@@ -156,7 +156,7 @@ const userSchema = new Schema<UserSchema>(
       {
         post: {
           type: ObjectId,
-          ref: "posts",
+          ref: 'posts',
         },
         saved_at: {
           type: Date,
@@ -207,7 +207,7 @@ const userSchema = new Schema<UserSchema>(
       },
       relationship: {
         type: String,
-        enum: ["Single", "In relationship", "Married", "Divorced"],
+        enum: ['Single', 'In relationship', 'Married', 'Divorced'],
         trim: true,
         text: true,
       },
@@ -234,14 +234,15 @@ const userSchema = new Schema<UserSchema>(
 
 userSchema.index({ email: 1 });
 
-userSchema.pre("save", async function (this: UserSchema, next) {
+userSchema.pre('save', async function (this: UserSchema, next) {
   const user = this;
-  if (!user.isModified("password")) return next();
+  if (!user.isModified('password')) return next();
   try {
     const salt: string = await bcrypt.genSalt(
       parseInt(process.env.SALTLENGHT as string)
     );
-    user.password = await bcrypt.hashSync(user.password, salt);
+    user.password = await bcrypt.hash(user.password, salt);
+    await user.createUserName();
     return next();
   } catch (err: any) {
     return next(err);
@@ -249,12 +250,12 @@ userSchema.pre("save", async function (this: UserSchema, next) {
 });
 
 // Generate new username when the username exist in DB
-userSchema.method.createUserName = async function () {
+userSchema.methods.createUserName = async function () {
   const user = this as UserSchema;
-  let newuser = null;
+  let newuser: any;
   do {
-    newuser = userModel.findOne({ username: user.username });
-    if (newuser) user.username += Math.floor(Math.random() * 3214).toString();
+    newuser = await userModel.findOne({ username: user.username });
+    if (!newuser) user.username += Math.floor(Math.random() * 3214).toString();
   } while (newuser);
 };
 
@@ -268,6 +269,6 @@ userSchema.methods.comparePassword = async function (
   return bcrypt.compare(candidatePassword, user.password).catch((e) => false);
 };
 
-const Users = model<UserSchema>("users", userSchema);
+const Users = model<UserSchema>('users', userSchema);
 
 export default Users;

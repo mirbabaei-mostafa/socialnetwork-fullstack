@@ -1,0 +1,16 @@
+Send request
+POST http://localhost:8001/api/register
+content-type: application/json
+
+{
+    "fname": "mostafa",
+    "lname": "mirbabaei",
+    "email": "mostafa@mostafa.com",
+    "password": "Most@fa654321",
+    "gender": "Male",
+    "birth_year": 1980,
+    "birth_month": 4,
+    "birth_day": 13
+}
+
+###
