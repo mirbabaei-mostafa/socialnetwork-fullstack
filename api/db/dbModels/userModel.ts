@@ -1,14 +1,20 @@
-import { NextFunction } from "express";
+import userModel from "./userModel";
+import dotenv from "dotenv";
 import bcrypt from "bcrypt";
 import mongoose, { Schema, model, connect, Types, ObjectId } from "mongoose";
 
+dotenv.config();
+
 const { ObjectId } = mongoose.Schema;
 
-export interface UserSchema {
+export interface UserSchema extends mongoose.Document {
   fname: string;
   lname: string;
   email: string;
+  username: string;
+  createUserName();
   password: string;
+  comparePassword(candidatePassword: string): Promise<boolean>;
   image: string;
   avatar: string;
   cover: string;
@@ -62,6 +68,13 @@ const userSchema = new Schema<UserSchema>(
       text: true,
     },
     email: {
+      type: String,
+      require: true,
+      unique: true,
+      trim: true,
+      text: true,
+    },
+    username: {
       type: String,
       require: true,
       unique: true,
@@ -219,18 +232,41 @@ const userSchema = new Schema<UserSchema>(
   { timestamps: true }
 );
 
-userSchema.pre("save", async function (next: NextFunction) {
-  // const user = this as UserSchema & { _id: Types.ObjectId };
+userSchema.index({ email: 1 });
+
+userSchema.pre("save", async function (this: UserSchema, next) {
   const user = this;
-  if (user.isModified("password")) {
-    try {
-      const salt: string = await bcrypt.genSalt(12);
-      user.password = await bcrypt.hash(user.password, salt);
-    } catch (err) {}
-  } else {
-    next();
+  if (!user.isModified("password")) return next();
+  try {
+    const salt: string = await bcrypt.genSalt(
+      parseInt(process.env.SALTLENGHT as string)
+    );
+    user.password = await bcrypt.hashSync(user.password, salt);
+    return next();
+  } catch (err: any) {
+    return next(err);
   }
 });
+
+// Generate new username when the username exist in DB
+userSchema.method.createUserName = async function () {
+  const user = this as UserSchema;
+  let newuser = null;
+  do {
+    newuser = userModel.findOne({ username: user.username });
+    if (newuser) user.username += Math.floor(Math.random() * 3214).toString();
+  } while (newuser);
+};
+
+// Compare a candidate password with the user's password
+userSchema.methods.comparePassword = async function (
+  candidatePassword: string
+): Promise<boolean> {
+  // So we don't have to pass this into the interface method
+  const user = this as UserSchema;
+
+  return bcrypt.compare(candidatePassword, user.password).catch((e) => false);
+};
 
 const Users = model<UserSchema>("users", userSchema);
 

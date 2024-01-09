@@ -1,4 +1,4 @@
-import Users, { UserSchema } from "../db/dbModels/user.model";
+import Users, { UserSchema } from "../db/dbModels/userModel";
 import { body } from "express-validator";
 
 const registerValidator = [
