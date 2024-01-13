@@ -1,11 +1,11 @@
 Send request
-POST http://localhost:8001/api/register
+POST http://localhost:8001/api/register  HTTP/1.1
 content-type: application/json
 
 {
     "fname": "mostafa",
     "lname": "mirbabaei",
-    "email": "mostafa@mostafa.com",
+    "email": "smmwizard@gmail.com",
     "password": "Most@fa654321",
     "gender": "Male",
     "birth_year": 1980,
@@ -14,3 +14,32 @@ content-type: application/json
 }
 
 ###
+Send request
+POST http://localhost:8001/api/register  HTTP/1.1
+content-type: application/json
+{
+    "fname": "mostafa",
+    "lname": "mirbabaei",
+    "email": "mostafa.de.repo@gmail.com",
+    "password": "Most@fa654321",
+    "gender": "Male",
+    "birth_year": 1980,
+    "birth_month": 4,
+    "birth_day": 13
+}
+
+### 
+POST http://localhost:8001/api/auth  HTTP/1.1
+content-type: application/json
+{
+    "email": "mostafa.de.repo@gmail.com",
+    "password": "Most@fa654321",
+}
+
+###
+
+POST http://localhost:8001/api/activate/  HTTP/1.1
+content-type: application/json
+{
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1YTEzNjgzMDFkNGU5NWI4Mjg2NjVmMSIsImlhdCI6MTcwNTA2NDA2NywiZXhwIjoxNzA1MDY1ODY3fQ.NEzJaNLDzZBcqpB0xMHA2I5gxsQVhxz2N6t1QCzrf8Q"
+}

@@ -1,8 +1,13 @@
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import Signin from "./pages/Signin";
 function App() {
   return (
-    <>
-      <div className="container font-title bg-green-400">Home</div>
-    </>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/login" element={<Signin />} />
+        <Route path="*" element={<Signin />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 
