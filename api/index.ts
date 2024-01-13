@@ -5,6 +5,9 @@ import { connectDB } from "./db/mongodb";
 import mongoose from "mongoose";
 import authRouter from "./routes/authRouter";
 import cookieParser from "cookie-parser";
+import activateRouter from "./routes/activateRouter";
+import { corsOptions, credentialCors } from "./utils/corsconfig";
+import cors, { CorsOptions } from "cors";
 
 const app: Application = express();
 
@@ -19,11 +22,15 @@ mongoose.connection.once("open", () => {
   });
 });
 
+app.use(credentialCors);
+app.use(cors(corsOptions as CorsOptions));
+// app.options("*", cors(corsOptions));
 app.use(express.json());
 app.use(cookieParser());
 
 app.use("/api/register", registerRouter);
 app.use("/api/auth", authRouter);
+app.use("/api/activate", activateRouter);
 
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
   console.log(err);
