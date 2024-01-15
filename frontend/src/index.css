@@ -8,3 +8,15 @@
 
 /* This injects Tailwind's utility classes and any utility classes registered by plugins. */
 @tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-gray-300;
+  }
+}
+
+@layer components {
+  .errorIcon {
+    @apply fill-red-600 w-4 h-4 absolute top-[20px] -translate-y-1/2 right-2;
+  }
+}
