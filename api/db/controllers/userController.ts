@@ -204,7 +204,7 @@ export const renewToken = async (
             hackedUser.refresh_token = [];
             await hackedUser.save();
           }
-          return res.status(403).json('Forbiden');
+          return res.status(403).json({ message: 'Forbiden' });
         }
 
         // Remove old refresh token from refresh token array
@@ -219,7 +219,7 @@ export const renewToken = async (
           await foundUser.save();
         }
         if (err || foundUser._id !== decoded.id)
-          return res.send(403).json('Forbiden');
+          return res.send(403).json({ message: 'Forbiden' });
 
         // Create new access and refresh tokens
         const [accessToken, refreshToken] = tokenCreator(foundUser._id);
