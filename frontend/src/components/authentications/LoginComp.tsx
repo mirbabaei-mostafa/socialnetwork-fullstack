@@ -1,26 +1,38 @@
 import { useTranslation } from "react-i18next";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import * as yup from "yup";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import useScreenSizer from "../../hooks/responsive";
-import {
-  IoIosAlert,
-  // IoMdLogIn,
-  // IoMdLogOut,
-  // IoIosPersonAdd,
-} from "react-icons/io";
+import authAction from "../../redux/actions/authentication";
+import { IoIosAlert } from "react-icons/io";
 import ErrorMsg from "./ErrorMsg";
+import { useAppDispatch, useAppSelector } from "../../redux/hooks";
+import { UserState } from "../../redux/slices/userSlice";
+import {
+  ACT_LOGIN_FAILED,
+  ACT_LOGIN_REQUEST,
+  ACT_LOGIN_SUCCESS,
+} from "../../redux/types";
+import axios from "../../utils/axios";
+import { useState } from "react";
 
 const LoginComp = () => {
   const {
-    screenSmall,
-    screenMedium,
+    // screenSmall,
+    // screenMedium,
     screenLarge,
     screenXLarge,
     screen2XLarge,
   } = useScreenSizer();
   const { t } = useTranslation();
+
+  const [errorMessage, setError] = useState<string>("");
+  const navigate = useNavigate();
+  const stateInfo: UserState = useAppSelector((state) => state.user);
+  // const stateInfo: UserState = useAppSelector(() => store.getState().user);
+  const dispatch = useAppDispatch();
+
   const yupSchema = yup.object().shape({
     email: yup.string().required(t("EmailRequired")).email(t("EmailFormat")),
     password: yup.string().required(t("PasswordRequired")),
@@ -38,8 +50,59 @@ const LoginComp = () => {
     resolver: yupResolver(yupSchema),
   });
 
-  const onSubmitHandler: SubmitHandler<UserI> = async (data: UserI) => {};
+  const onSubmitHandler: SubmitHandler<UserI> = async (data: UserI) => {
+    dispatch(authAction(data, setError));
+    // dispatch(authentication({ type: ACT_LOGIN_REQUEST }));
+    // try {
+    //   await axios
+    //     .post("/api/auth", JSON.stringify(data), {
+    //       headers: { "Content-Type": "application/json" },
+    //       withCredentials: true,
+    //     })
+    //     .then((res) => {
+    //       dispatch(
+    //         authentication({
+    //           type: ACT_LOGIN_SUCCESS,
+    //           payload: res?.data,
+    //         })
+    //       );
+    //     });
+    // } catch (err: unknown | any) {
+    //   let errMsg: string = "";
+    //   let errStatus: number = 0;
+    //   if (!err?.response) {
+    //     errMsg = "ServerIsNotAccessable";
+    //     errStatus = 503;
+    //   } else if (err?.response?.status === 400) {
+    //     errStatus = err?.response?.status;
+    //     err?.response?.data.error
+    //       ? (errMsg = err?.response?.data.error)
+    //       : (errMsg = "InvalidEmailPassword");
+    //   } else if (err?.response?.status === 401) {
+    //     errStatus = err?.response?.status;
+    //     err?.response?.data.error
+    //       ? (errMsg = err?.response?.data.error)
+    //       : (errMsg = "IncorectEmailPassword");
+    //   } else if (err?.response?.status === 403) {
+    //     errStatus = err?.response?.status;
+    //     err?.response?.data.error
+    //       ? (errMsg = err?.response?.data.error)
+    //       : (errMsg = "Forbidden");
+    //   } else if (err instanceof Error) {
+    //     errMsg = err.message;
+    //   } else {
+    //     errMsg = "GeneralError";
+    //   }
+    //   dispatch(
+    //     authentication({
+    //       type: ACT_LOGIN_FAILED,
+    //       payload: { error: errMsg, status: errStatus },
+    //     })
+    //   );
+    // }
+  };
 
+  console.log(stateInfo);
   return (
     <div className="w-80 rounded shadow-md bg-white p-4 m-auto">
       <div className="w-72 flex flex-col items-center">
@@ -108,6 +171,12 @@ const LoginComp = () => {
               {t("Login")}
             </button>
           </div>
+          {/* {errorMessage && ( */}
+          {stateInfo.error && (
+            <div className="text-red-700 font-bold text-md font-mono pb-6 text-center">
+              {t(errorMessage)}
+            </div>
+          )}
           <div className="w-full pb-5">
             <Link
               to={"/api/forgot"}
