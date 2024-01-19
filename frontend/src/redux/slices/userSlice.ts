@@ -1,5 +1,6 @@
-import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { RootState } from "../store";
+import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { RootState } from '../store';
+import axios from '../../utils/axios';
 
 // Define a type for the slice state
 export interface UserInfo {
@@ -13,46 +14,92 @@ export interface UserInfo {
   cover: string;
 }
 
+export interface UserState {
+  userInfo: UserInfo;
+  isLoading: boolean;
+  error: string;
+}
+
 // Define the initial state using that type
-const initialState: UserInfo = {
-  accessToken: "",
-  fname: "",
-  lname: "",
-  email: "",
-  username: "",
-  image: "",
-  avatar: "",
-  cover: "",
+const initialState: UserState = {
+  userInfo: {
+    accessToken: '',
+    fname: '',
+    lname: '',
+    email: '',
+    username: '',
+    image: '',
+    avatar: '',
+    cover: '',
+  },
+  isLoading: false,
+  error: '',
 };
 
+interface UserI {
+  email: string;
+  password: string;
+}
+
+export const doAuth = createAsyncThunk('user/fetchUsers', (authInfo: UserI) => {
+  return axios
+    .post('/api/auths', JSON.stringify(authInfo), {
+      headers: { 'Content-Type': 'application/json' },
+      withCredentials: true,
+    })
+    .then((response) => response.data);
+});
+
 export const userSlice = createSlice({
-  name: "user",
+  name: 'user',
   initialState,
   reducers: {
-    authentication: (state, action: PayloadAction<UserInfo>) => {
-      state.accessToken = action.payload.accessToken;
-      state.fname = action.payload.fname;
-      state.lname = action.payload.lname;
-      state.email = action.payload.email;
-      state.username = action.payload.username;
-      state.image = action.payload.image;
-      state.avatar = action.payload.avatar;
-      state.cover = action.payload.cover;
-    },
     signout: (state) => {
-      state.accessToken = "";
-      state.fname = "";
-      state.lname = "";
-      state.email = "";
-      state.username = "";
-      state.image = "";
-      state.avatar = "";
-      state.cover = "";
+      state.isLoading = false;
+      state.userInfo = {
+        accessToken: '',
+        fname: '',
+        lname: '',
+        email: '',
+        username: '',
+        image: '',
+        avatar: '',
+        cover: '',
+      };
+      state.error = '';
     },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(doAuth.pending, (state) => {
+      state.isLoading = true;
+    });
+    builder.addCase(
+      doAuth.fulfilled,
+      (state, action: PayloadAction<UserInfo>) => {
+        state.isLoading = false;
+        state.userInfo = action.payload;
+        state.error = '';
+      }
+    );
+    builder.addCase(doAuth.rejected, (state, action) => {
+      console.log(action);
+      state.isLoading = false;
+      state.userInfo = {
+        accessToken: '',
+        fname: '',
+        lname: '',
+        email: '',
+        username: '',
+        image: '',
+        avatar: '',
+        cover: '',
+      };
+      state.error = action.error.message || 'ServerIsNotAccessable';
+    });
   },
 });
 
-export const { authentication, signout } = userSlice.actions;
+export const { signout } = userSlice.actions;
 
 export const userSelector = (state: RootState) => state.user;
 

@@ -1,14 +1,16 @@
-import React from "react";
+import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import LoginComp from "../components/authentications/LoginComp";
+import RegisterForm from "../components/authentications/RegisterForm";
 
 const Signin = () => {
   const { t } = useTranslation();
+  const [showRegister, setShowRegister] = useState<boolean>(false);
   return (
     <div>
       {/* Login Form */}
       <div className="flex flex-col lg:flex-row justify-center lg:justify-center lg:gap-5 lg:mx-24 xl:mx-36 2xl:mx-60 space-y-4 items-center h-screen p-4">
-        <div className="flex flex-col justify-center items-center lg:items-start">
+        <div className="flex flex-col justify-center items-center lg:items-start lg:w-[600px]">
           <div>
             <img
               src="./images/materials/logo-medium.png"
@@ -20,11 +22,15 @@ const Signin = () => {
           </div>
         </div>
         <div>
-          <LoginComp />
+          <LoginComp regFn={setShowRegister} />
         </div>
       </div>
       {/* Sign up Form */}
-      <div></div>
+      {showRegister && (
+        <div className="absolute inset-0 flex justify-center items-center bg-gray-500 bg-opacity-70">
+          <RegisterForm regFn={setShowRegister} />
+        </div>
+      )}
     </div>
   );
 };

@@ -19,4 +19,10 @@
   .errorIcon {
     @apply fill-red-600 w-4 h-4 absolute top-[20px] -translate-y-1/2 right-2;
   }
+  .icon-normal {
+    @apply fill-mycyan hover:fill-mycyan-dark w-5 h-5;
+  }
+  .select-form {
+    @apply font-sans text-xs border-gray-600 rounded py-3 pl-3 pr-7 items-start;
+  }
 }

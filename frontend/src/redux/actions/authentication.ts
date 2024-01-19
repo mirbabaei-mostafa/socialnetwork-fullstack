@@ -1,13 +1,10 @@
-import axios from "../../utils/axios";
-import { useAppDispatch } from "../hooks";
-import { AppDispatch } from "../store";
-import { AxiosError } from "axios";
+import axios from '../../utils/axios';
+import { AppDispatch } from '../store';
 import {
   ACT_LOGIN_REQUEST,
   ACT_LOGIN_SUCCESS,
   ACT_LOGIN_FAILED,
-  ErrorResult,
-} from "../types";
+} from '../types';
 
 type AuthInfo = {
   email: string;
@@ -19,8 +16,8 @@ const authentication =
     dispatch({ type: ACT_LOGIN_REQUEST });
     try {
       await axios
-        .post("/api/auth", JSON.stringify(authInfo), {
-          headers: { "Content-Type": "application/json" },
+        .post('/api/auth', JSON.stringify(authInfo), {
+          headers: { 'Content-Type': 'application/json' },
           withCredentials: true,
         })
         .then((res) => {
@@ -30,30 +27,30 @@ const authentication =
           });
         });
     } catch (err: unknown | any) {
-      let errMsg: string = "";
+      let errMsg: string = '';
       let errStatus: number = 0;
       if (!err?.response) {
-        errMsg = "ServerIsNotAccessable";
+        errMsg = 'ServerIsNotAccessable';
         errStatus = 503;
       } else if (err?.response?.status === 400) {
         errStatus = err?.response?.status;
         err?.response?.data.error
           ? (errMsg = err?.response?.data.error)
-          : (errMsg = "InvalidEmailPassword");
+          : (errMsg = 'InvalidEmailPassword');
       } else if (err?.response?.status === 401) {
         errStatus = err?.response?.status;
         err?.response?.data.error
           ? (errMsg = err?.response?.data.error)
-          : (errMsg = "IncorectEmailPassword");
+          : (errMsg = 'IncorectEmailPassword');
       } else if (err?.response?.status === 403) {
         errStatus = err?.response?.status;
         err?.response?.data.error
           ? (errMsg = err?.response?.data.error)
-          : (errMsg = "Forbidden");
+          : (errMsg = 'Forbidden');
       } else if (err instanceof Error) {
         errMsg = err.message;
       } else {
-        errMsg = "GeneralError";
+        errMsg = 'GeneralError';
       }
       dispatch({
         type: ACT_LOGIN_FAILED,
