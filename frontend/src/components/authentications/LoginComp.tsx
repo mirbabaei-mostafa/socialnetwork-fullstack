@@ -4,17 +4,16 @@ import * as yup from "yup";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import useScreenSizer from "../../hooks/responsive";
-import authAction from "../../redux/actions/authentication";
 import { IoIosAlert } from "react-icons/io";
 import ErrorMsg from "./ErrorMsg";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
-import { UserState } from "../../redux/slices/userSlice";
 import {
-  ACT_LOGIN_FAILED,
-  ACT_LOGIN_REQUEST,
-  ACT_LOGIN_SUCCESS,
-} from "../../redux/types";
+  UserInfo,
+  authentication,
+  userSelector,
+} from "../../redux/slices/userSlice";
 import axios from "../../utils/axios";
+import { RootState } from "../../redux/store";
 import { useState } from "react";
 
 const LoginComp = () => {
@@ -28,8 +27,10 @@ const LoginComp = () => {
   const { t } = useTranslation();
 
   const [errorMessage, setError] = useState<string>("");
+  const [isLoading, setLoading] = useState<boolean>(false);
   const navigate = useNavigate();
-  const stateInfo: UserState = useAppSelector((state) => state.user);
+  const userState: UserInfo = useAppSelector((state: RootState) => state.user);
+  // const userState: UserState = useAppSelector(userSelector);
   // const stateInfo: UserState = useAppSelector(() => store.getState().user);
   const dispatch = useAppDispatch();
 
@@ -51,58 +52,44 @@ const LoginComp = () => {
   });
 
   const onSubmitHandler: SubmitHandler<UserI> = async (data: UserI) => {
-    dispatch(authAction(data, setError));
-    // dispatch(authentication({ type: ACT_LOGIN_REQUEST }));
-    // try {
-    //   await axios
-    //     .post("/api/auth", JSON.stringify(data), {
-    //       headers: { "Content-Type": "application/json" },
-    //       withCredentials: true,
-    //     })
-    //     .then((res) => {
-    //       dispatch(
-    //         authentication({
-    //           type: ACT_LOGIN_SUCCESS,
-    //           payload: res?.data,
-    //         })
-    //       );
-    //     });
-    // } catch (err: unknown | any) {
-    //   let errMsg: string = "";
-    //   let errStatus: number = 0;
-    //   if (!err?.response) {
-    //     errMsg = "ServerIsNotAccessable";
-    //     errStatus = 503;
-    //   } else if (err?.response?.status === 400) {
-    //     errStatus = err?.response?.status;
-    //     err?.response?.data.error
-    //       ? (errMsg = err?.response?.data.error)
-    //       : (errMsg = "InvalidEmailPassword");
-    //   } else if (err?.response?.status === 401) {
-    //     errStatus = err?.response?.status;
-    //     err?.response?.data.error
-    //       ? (errMsg = err?.response?.data.error)
-    //       : (errMsg = "IncorectEmailPassword");
-    //   } else if (err?.response?.status === 403) {
-    //     errStatus = err?.response?.status;
-    //     err?.response?.data.error
-    //       ? (errMsg = err?.response?.data.error)
-    //       : (errMsg = "Forbidden");
-    //   } else if (err instanceof Error) {
-    //     errMsg = err.message;
-    //   } else {
-    //     errMsg = "GeneralError";
-    //   }
-    //   dispatch(
-    //     authentication({
-    //       type: ACT_LOGIN_FAILED,
-    //       payload: { error: errMsg, status: errStatus },
-    //     })
-    //   );
-    // }
+    // dispatch(authAction(data, setError));
+    setLoading(true);
+    try {
+      await axios
+        .post("/api/auth", JSON.stringify(data), {
+          headers: { "Content-Type": "application/json" },
+          withCredentials: true,
+        })
+        .then((res) => {
+          dispatch(authentication(res?.data));
+          setLoading(false);
+          setError("");
+        });
+    } catch (err: unknown | any) {
+      if (!err?.response) {
+        setError("ServerIsNotAccessable");
+      } else if (err?.response?.status === 400) {
+        err?.response?.data.error
+          ? setError(err?.response?.data.error)
+          : setError("InvalidEmailPassword");
+      } else if (err?.response?.status === 401) {
+        err?.response?.data.error
+          ? setError(err?.response?.data.error)
+          : setError("IncorectEmailPassword");
+      } else if (err?.response?.status === 403) {
+        err?.response?.data.error
+          ? setError(err?.response?.data.error)
+          : setError("Forbidden");
+      } else if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError("GeneralError");
+      }
+      setLoading(false);
+    }
   };
 
-  console.log(stateInfo);
+  // console.log(stateInfo);
   return (
     <div className="w-80 rounded shadow-md bg-white p-4 m-auto">
       <div className="w-72 flex flex-col items-center">
@@ -171,8 +158,7 @@ const LoginComp = () => {
               {t("Login")}
             </button>
           </div>
-          {/* {errorMessage && ( */}
-          {stateInfo.error && (
+          {errorMessage && (
             <div className="text-red-700 font-bold text-md font-mono pb-6 text-center">
               {t(errorMessage)}
             </div>
