@@ -1,5 +1,6 @@
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "../../utils/axios";
+import { AxiosResponse } from "axios";
 // import { RootState } from "../store";
 
 export interface NewUserInfo {
@@ -7,45 +8,58 @@ export interface NewUserInfo {
   lname: string;
   email: string;
   // username: string;
-  // password: string;
+  password: string;
   gender: string;
   birth_year: number;
   birth_month: number;
   birth_day: number;
 }
-
-// const initialState: NewUserInfo = {
-//   fname: "",
-//   lname: "",
-//   email: "",
-//   username: "",
-//   password: "",
-//   gender: "",
-//   birth_year: 0,
-//   birth_month: 0,
-//   birth_day: 0,
-// };
+export interface UserInfo {
+  fname: string;
+  lname: string;
+  email: string;
+}
 
 export interface RegisterState {
-  // userInfo: UserInfo;
+  userInfo: UserInfo;
   isLoading: boolean;
   error: string;
 }
 
 const initialState: RegisterState = {
+  userInfo: {
+    fname: "",
+    lname: "",
+    email: "",
+  },
   isLoading: false,
   error: "",
 };
 
 export const doRegister = createAsyncThunk(
-  "user/fetchUsers",
-  (registerInfo: NewUserInfo) => {
-    return axios
-      .post("/api/register", JSON.stringify(registerInfo), {
-        headers: { "Content-Type": "application/json" },
-        withCredentials: true,
-      })
-      .then((response) => response.data);
+  "user/register",
+  async (registerInfo: NewUserInfo, { rejectWithValue }) => {
+    try {
+      const response = await axios.post(
+        "/api/register",
+        JSON.stringify(registerInfo),
+        {
+          headers: { "Content-Type": "application/json" },
+          withCredentials: true,
+        }
+      );
+      return response.data;
+    } catch (err: unknown | any) {
+      if (!err?.response) {
+        return rejectWithValue("ServerIsNotAccessable");
+      } else if (err?.response) {
+        return rejectWithValue(err?.response?.data.error);
+      } else if (err instanceof Error) {
+        return rejectWithValue(err.message);
+      } else {
+        return rejectWithValue("GeneralError");
+      }
+    }
   }
 );
 
@@ -56,29 +70,26 @@ export const registerSlice = createSlice({
   extraReducers: (builder) => {
     builder.addCase(doRegister.pending, (state) => {
       state.isLoading = true;
+      state.error = "";
     });
-    builder.addCase(
-      doRegister.fulfilled,
-      (state, action: PayloadAction<RegisterState>) => {
-        state.isLoading = false;
-        // state.userInfo = action.payload;
-        state.error = "";
-      }
-    );
-    builder.addCase(doRegister.rejected, (state, action) => {
-      console.log(action);
+    builder.addCase(doRegister.fulfilled, (state, action) => {
       state.isLoading = false;
-      // state.userInfo = {
-      //   accessToken: "",
-      //   fname: "",
-      //   lname: "",
-      //   email: "",
-      //   username: "",
-      //   image: "",
-      //   avatar: "",
-      //   cover: "",
-      // };
-      state.error = action.error.message || "ServerIsNotAccessable";
+      state.userInfo = {
+        fname: action.payload?.fname,
+        lname: action.payload?.lname,
+        email: action.payload?.email,
+      };
+      state.error = "";
+    });
+    builder.addCase(doRegister.rejected, (state, action) => {
+      state.isLoading = false;
+      state.userInfo = {
+        fname: "",
+        lname: "",
+        email: "",
+      };
+      state.error =
+        (action.payload as string) || (action.error.message as string);
     });
   },
 });

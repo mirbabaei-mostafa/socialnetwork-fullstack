@@ -1,11 +1,12 @@
-import React, { useState } from "react";
-import { useTranslation } from "react-i18next";
-import LoginComp from "../components/authentications/LoginComp";
-import RegisterForm from "../components/authentications/RegisterForm";
+import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import LoginComp from '../components/authentications/LoginComp';
+import RegisterForm from '../components/authentications/RegisterForm';
 
 const Signin = () => {
   const { t } = useTranslation();
   const [showRegister, setShowRegister] = useState<boolean>(false);
+
   return (
     <div>
       {/* Login Form */}
@@ -18,7 +19,7 @@ const Signin = () => {
             />
           </div>
           <div className="font-headline text-lg lg:text-2xl font-bold py-4 text-center lg:text-left">
-            {t("LoginMoto")}
+            {t('LoginMoto')}
           </div>
         </div>
         <div>

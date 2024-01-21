@@ -1,6 +1,12 @@
-import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { RootState } from '../store';
-import axios from '../../utils/axios';
+import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { RootState } from "../store";
+import axios from "../../utils/axios";
+
+// https://blog.logrocket.com/handling-user-authentication-redux-toolkit/
+// https://github.com/bezkoder/redux-toolkit-authentication/
+// https://www.bezkoder.com/redux-toolkit-auth/
+// https://github.com/Bria222/React-Redux-Toolkit-Login-Register
+// https://redux-toolkit.js.org/api/createAsyncThunk
 
 // Define a type for the slice state
 export interface UserInfo {
@@ -23,17 +29,17 @@ export interface UserState {
 // Define the initial state using that type
 const initialState: UserState = {
   userInfo: {
-    accessToken: '',
-    fname: '',
-    lname: '',
-    email: '',
-    username: '',
-    image: '',
-    avatar: '',
-    cover: '',
+    accessToken: "",
+    fname: "",
+    lname: "",
+    email: "",
+    username: "",
+    image: "",
+    avatar: "",
+    cover: "",
   },
   isLoading: false,
-  error: '',
+  error: "",
 };
 
 interface UserI {
@@ -41,60 +47,100 @@ interface UserI {
   password: string;
 }
 
-export const doAuth = createAsyncThunk('user/fetchUsers', (authInfo: UserI) => {
-  return axios
-    .post('/api/auths', JSON.stringify(authInfo), {
-      headers: { 'Content-Type': 'application/json' },
-      withCredentials: true,
-    })
-    .then((response) => response.data);
-});
+export const doAuth = createAsyncThunk(
+  "user/auth",
+  async (authInfo: UserI, { rejectWithValue }) => {
+    try {
+      const response = await axios.post("/api/auth", JSON.stringify(authInfo), {
+        headers: { "Content-Type": "application/json" },
+        withCredentials: true,
+      });
+      return response.data;
+      // .then((response) => response.data);
+    } catch (err: unknown | any) {
+      if (!err?.response) {
+        return rejectWithValue("ServerIsNotAccessable");
+      } else if (err?.response?.status === 400) {
+        return rejectWithValue(
+          err?.response?.data.error
+            ? err?.response?.data.error
+            : "InvalidEmailPassword"
+        );
+      } else if (err?.response?.status === 401) {
+        return rejectWithValue(
+          err?.response?.data.error
+            ? err?.response?.data.error
+            : "IncorectEmailPassword"
+        );
+      } else if (err?.response?.status === 403) {
+        return rejectWithValue(
+          err?.response?.data.error
+            ? err?.response?.data.error
+            : "IncorectEmailPassword"
+        );
+      } else if (err instanceof Error) {
+        return rejectWithValue(err.message);
+      } else {
+        return rejectWithValue("GeneralError");
+      }
+    }
+  }
+);
 
 export const userSlice = createSlice({
-  name: 'user',
+  name: "user",
   initialState,
   reducers: {
     signout: (state) => {
       state.isLoading = false;
       state.userInfo = {
-        accessToken: '',
-        fname: '',
-        lname: '',
-        email: '',
-        username: '',
-        image: '',
-        avatar: '',
-        cover: '',
+        accessToken: "",
+        fname: "",
+        lname: "",
+        email: "",
+        username: "",
+        image: "",
+        avatar: "",
+        cover: "",
       };
-      state.error = '';
+      state.error = "";
     },
   },
   extraReducers: (builder) => {
     builder.addCase(doAuth.pending, (state) => {
       state.isLoading = true;
     });
-    builder.addCase(
-      doAuth.fulfilled,
-      (state, action: PayloadAction<UserInfo>) => {
-        state.isLoading = false;
-        state.userInfo = action.payload;
-        state.error = '';
-      }
-    );
+    builder.addCase(doAuth.fulfilled, (state, action) => {
+      console.log(action);
+      state.isLoading = false;
+      state.userInfo = {
+        ...state.userInfo,
+        accessToken: action.payload?.accessToken,
+        fname: action.payload?.fname,
+        lname: action.payload?.lname,
+        email: action.payload?.email,
+        username: action.payload?.username,
+        image: action.payload?.image,
+        avatar: action.payload?.avatar,
+        cover: action.payload?.cover,
+      };
+      state.error = "";
+    });
     builder.addCase(doAuth.rejected, (state, action) => {
       console.log(action);
       state.isLoading = false;
       state.userInfo = {
-        accessToken: '',
-        fname: '',
-        lname: '',
-        email: '',
-        username: '',
-        image: '',
-        avatar: '',
-        cover: '',
+        accessToken: "",
+        fname: "",
+        lname: "",
+        email: "",
+        username: "",
+        image: "",
+        avatar: "",
+        cover: "",
       };
-      state.error = action.error.message || 'ServerIsNotAccessable';
+      state.error =
+        (action.payload as string) || (action.error.message as string);
     });
   },
 });

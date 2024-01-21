@@ -29,7 +29,7 @@ export const registerUser = async (
       // In userModel passwrd will be encrypted and username will be created
       const newUser = await new userModel({
         ...req.body,
-        username: req.body.fname + req.body.lname,
+        username: (req.body.fname + req.body.lname).toString().toLowerCase(),
       });
       await newUser.save();
 
