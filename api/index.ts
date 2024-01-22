@@ -8,6 +8,7 @@ import cookieParser from "cookie-parser";
 import activateRouter from "./routes/activateRouter";
 import { corsOptions, credentialCors } from "./utils/corsconfig";
 import cors, { CorsOptions } from "cors";
+import renewRouter from "./routes/renewRouter";
 
 const app: Application = express();
 
@@ -31,6 +32,7 @@ app.use(cookieParser());
 app.use("/api/register", registerRouter);
 app.use("/api/auth", authRouter);
 app.use("/api/activate", activateRouter);
+app.use("/api/renew", renewRouter);
 
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
   console.log(err);

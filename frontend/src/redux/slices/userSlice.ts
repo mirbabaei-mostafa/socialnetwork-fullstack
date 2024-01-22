@@ -74,9 +74,33 @@ export const doAuth = createAsyncThunk(
         );
       } else if (err?.response?.status === 403) {
         return rejectWithValue(
-          err?.response?.data.error
-            ? err?.response?.data.error
-            : "IncorectEmailPassword"
+          err?.response?.data.error ? err?.response?.data.error : "Forbiden"
+        );
+      } else if (err instanceof Error) {
+        return rejectWithValue(err.message);
+      } else {
+        return rejectWithValue("GeneralError");
+      }
+    }
+  }
+);
+
+export const renewToken = createAsyncThunk(
+  "user/token",
+  async (authInfo: string, { rejectWithValue }) => {
+    try {
+      const response = await axios.get("/api/renew", {
+        headers: { "Content-Type": "application/json" },
+        withCredentials: true,
+      });
+      return response.data;
+      // .then((response) => response.data);
+    } catch (err: unknown | any) {
+      if (!err?.response) {
+        return rejectWithValue("ServerIsNotAccessable");
+      } else if (err?.response?.status === 403) {
+        return rejectWithValue(
+          err?.response?.data.error ? err?.response?.data.error : "Forbiden"
         );
       } else if (err instanceof Error) {
         return rejectWithValue(err.message);
@@ -128,6 +152,39 @@ export const userSlice = createSlice({
     });
     builder.addCase(doAuth.rejected, (state, action) => {
       console.log(action);
+      state.isLoading = false;
+      state.userInfo = {
+        accessToken: "",
+        fname: "",
+        lname: "",
+        email: "",
+        username: "",
+        image: "",
+        avatar: "",
+        cover: "",
+      };
+      state.error =
+        (action.payload as string) || (action.error.message as string);
+    });
+    builder.addCase(renewToken.pending, (state) => {
+      state.isLoading = true;
+    });
+    builder.addCase(renewToken.fulfilled, (state, action) => {
+      state.isLoading = false;
+      state.userInfo = {
+        ...state.userInfo,
+        accessToken: action.payload?.accessToken,
+        fname: action.payload?.fname,
+        lname: action.payload?.lname,
+        email: action.payload?.email,
+        username: action.payload?.username,
+        image: action.payload?.image,
+        avatar: action.payload?.avatar,
+        cover: action.payload?.cover,
+      };
+      state.error = "";
+    });
+    builder.addCase(renewToken.rejected, (state, action) => {
       state.isLoading = false;
       state.userInfo = {
         accessToken: "",

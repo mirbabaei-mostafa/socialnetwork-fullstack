@@ -1,14 +1,14 @@
-import { NextFunction, Request, Response } from 'express';
-import userModel, { UserSchema } from '../models/userModel';
+import { NextFunction, Request, Response } from "express";
+import userModel, { UserSchema } from "../models/userModel";
 import {
   Result,
   ValidationError,
   cookie,
   validationResult,
-} from 'express-validator';
-import jwt, { JwtPayload } from 'jsonwebtoken';
-import dotenv from 'dotenv';
-import sendVerification from '../../utils/mailer';
+} from "express-validator";
+import jwt, { JwtPayload } from "jsonwebtoken";
+import dotenv from "dotenv";
+import sendVerification from "../../utils/mailer";
 
 dotenv.config();
 
@@ -37,14 +37,14 @@ export const registerUser = async (
       const mailToken = jwt.sign(
         { id: newUser.id.toString() },
         process.env.JWT_TOKEN as string,
-        { expiresIn: '30m' }
+        { expiresIn: "30m" }
       );
-      const url: string = process.env.BASEURL + '/api/activate/' + mailToken;
+      const url: string = process.env.BASEURL + "/api/activate/" + mailToken;
       console.log(url);
       sendVerification(newUser.email, newUser.username, url);
 
       // Successfull create new user
-      res.status(201).json({ message: 'SuccessRegisterUser' });
+      res.status(201).json({ message: "SuccessRegisterUser" });
     } catch (err) {
       // Registring new user faced an error and return Error
       // res.status(500).json({ error: validateRes.array() });
@@ -62,22 +62,22 @@ export const verifyUser = async (
   const { token } = req.body;
 
   // To control if the token exist
-  !token && res.status(401).json({ message: 'TokenNotValidated' });
+  !token && res.status(401).json({ message: "TokenNotValidated" });
 
   try {
     // Compare recieved token with secret key
     const userId = jwt.verify(token, process.env.JWT_TOKEN as string);
-    !userId && res.status(401).json({ message: 'TokenNotVerifiedOrExpired' });
+    !userId && res.status(401).json({ message: "TokenNotVerifiedOrExpired" });
 
     const foundUser = await userModel.findById((userId as any).id);
-    !foundUser && res.status(401).json({ message: 'TokenNotAssignToUser' });
+    !foundUser && res.status(401).json({ message: "TokenNotAssignToUser" });
     if (foundUser!.verify) {
-      res.status(200).json({ message: 'UserWasAlreadyVerified' });
+      res.status(200).json({ message: "UserWasAlreadyVerified" });
     } else {
       // foundUser!.verify = true;
       // await foundUser?.save();
       await userModel.findByIdAndUpdate((userId as any).id, { verify: true });
-      res.status(200).json({ message: 'UserActivated' });
+      res.status(200).json({ message: "UserActivated" });
     }
   } catch (err) {
     res.status(401).json({ message: err });
@@ -103,12 +103,12 @@ export const authUser = async (
       });
       // Email address dose not exit
       if (!foundUser) {
-        return res.status(401).json({ error: 'EmailDoseNotExist' });
+        return res.status(401).json({ error: "EmailDoseNotExist" });
       }
       // Password entered wrong
       const compareRes = await foundUser.comparePassword(req.body.password);
       if (!compareRes) {
-        return res.status(401).json({ error: 'PasswordIsWrong' });
+        return res.status(401).json({ error: "PasswordIsWrong" });
       }
 
       // Create access and refresh tokens
@@ -129,10 +129,10 @@ export const authUser = async (
         });
         if (!foundToken) refreshTokenArray = [];
 
-        res.clearCookie('auth_token', {
+        res.clearCookie("auth_token", {
           httpOnly: true,
           secure: true,
-          sameSite: 'none',
+          sameSite: "none",
         });
       }
 
@@ -141,10 +141,10 @@ export const authUser = async (
       await foundUser.save();
 
       // send new refresh token as cookie to client
-      res.cookie('auth_token', refreshToken, {
+      res.cookie("auth_token", refreshToken, {
         httpOnly: true,
         secure: true,
-        sameSite: 'none',
+        sameSite: "none",
         maxAge:
           parseInt(process.env.COOKIE_CLIENT_MAXAGE as string) *
           1000 *
@@ -181,10 +181,10 @@ export const renewToken = async (
   const oldToken: any = req.cookies?.auth_token;
 
   // Remove current access cookie
-  res.clearCookie('auth_token', {
+  res.clearCookie("auth_token", {
     httpOnly: true,
     secure: true,
-    sameSite: 'none',
+    sameSite: "none",
   });
   try {
     const foundUser: UserSchema | null = await userModel.findOne({
@@ -204,7 +204,7 @@ export const renewToken = async (
             hackedUser.refresh_token = [];
             await hackedUser.save();
           }
-          return res.status(403).json({ message: 'Forbiden' });
+          return res.status(403).json({ message: "Forbiden" });
         }
 
         // Remove old refresh token from refresh token array
@@ -219,7 +219,7 @@ export const renewToken = async (
           await foundUser.save();
         }
         if (err || foundUser._id !== decoded.id)
-          return res.send(403).json({ message: 'Forbiden' });
+          return res.send(403).json({ message: "Forbiden" });
 
         // Create new access and refresh tokens
         const [accessToken, refreshToken] = tokenCreator(foundUser._id);
@@ -227,10 +227,10 @@ export const renewToken = async (
         await foundUser.save();
 
         // send new refresh token as cookie to client
-        res.cookie('auth_token', refreshToken, {
+        res.cookie("auth_token", refreshToken, {
           httpOnly: true,
           secure: true,
-          sameSite: 'none',
+          sameSite: "none",
           maxAge:
             parseInt(process.env.COOKIE_CLIENT_MAXAGE as string) *
             1000 *
@@ -239,9 +239,21 @@ export const renewToken = async (
             24,
         });
 
-        // send access token to client
+        // // send to client
+        // res.json({
+        //   accessToken: accessToken,
+        // });
+
+        // send user access token and information to client
         res.json({
           accessToken: accessToken,
+          fname: foundUser.fname,
+          lname: foundUser.lname,
+          email: foundUser.email,
+          username: foundUser.username,
+          image: foundUser.image,
+          avatar: foundUser.avatar,
+          cover: foundUser.cover,
         });
       }
     );
