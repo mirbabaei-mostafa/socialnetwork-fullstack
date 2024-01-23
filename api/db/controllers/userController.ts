@@ -180,12 +180,6 @@ export const renewToken = async (
   !req.cookies?.auth_token && res.sendStatus(401);
   const oldToken: any = req.cookies?.auth_token;
 
-  // Remove current access cookie
-  res.clearCookie("auth_token", {
-    httpOnly: true,
-    secure: true,
-    sameSite: "none",
-  });
   try {
     const foundUser: UserSchema | null = await userModel.findOne({
       refresh_token: oldToken,
@@ -211,6 +205,13 @@ export const renewToken = async (
         const newRefreshToken = foundUser.refresh_token.filter(
           (rToken) => rToken !== oldToken
         );
+
+        // Remove current access cookie
+        res.clearCookie("auth_token", {
+          httpOnly: true,
+          secure: true,
+          sameSite: "none",
+        });
 
         // When occured an error, means that token is not verfied.
         // save token array and back forbiden error

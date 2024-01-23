@@ -3,16 +3,15 @@ import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { UserState, renewToken } from "../../redux/slices/userSlice";
 import { RootState } from "../../redux/store";
 import SpinnerBarLoader from "../spinners/SpinnerBarLoader";
-import { useEffect } from "react";
-import { Outlet, useNavigate } from "react-router-dom";
+import { useDeferredValue, useEffect } from "react";
+import { Navigate, Outlet } from "react-router-dom";
 
 const PersistAuth = () => {
   const userState: UserState = useAppSelector((state: RootState): UserState => {
     return state.user as UserState;
   }, shallowEqual);
   const dispatch = useAppDispatch();
-
-  const navigate = useNavigate();
+  const IsLoadingVal: boolean = useDeferredValue(userState.isLoading);
 
   useEffect(() => {
     if (!userState?.userInfo.accessToken) {
@@ -20,10 +19,10 @@ const PersistAuth = () => {
     }
   }, []);
 
-  userState?.error && navigate("/login");
   return (
     <>
-      <SpinnerBarLoader isLoading={userState.isLoading} />
+      {!userState?.userInfo.accessToken && <Navigate to="/login" />}
+      <SpinnerBarLoader isLoading={IsLoadingVal} />
       {userState?.userInfo.accessToken && <Outlet />}
     </>
   );
