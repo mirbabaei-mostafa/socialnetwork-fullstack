@@ -177,8 +177,15 @@ export const renewToken = async (
   res: Response,
   next: NextFunction
 ) => {
-  !req.cookies?.auth_token && res.sendStatus(401);
+  if (!req.cookies?.auth_token) return res.sendStatus(401);
   const oldToken: any = req.cookies?.auth_token;
+
+  // Remove current access cookie
+  res.clearCookie("auth_token", {
+    httpOnly: true,
+    secure: true,
+    sameSite: "none",
+  });
 
   try {
     const foundUser: UserSchema | null = await userModel.findOne({
@@ -193,39 +200,40 @@ export const renewToken = async (
         // maybe app/website hacked then have to remove refresh token
         if (!foundUser) {
           if (err) return;
-          const hackedUser: any = userModel.findById((decoded as any).id);
+
+          const hackedUser: any = await userModel.findOne({
+            _id: (decoded as any).id,
+          });
           if (hackedUser) {
             hackedUser.refresh_token = [];
             await hackedUser.save();
           }
-          return res.status(403).json({ message: "Forbiden" });
+          return res.sendStatus(403).json({ message: "Forbiden" });
         }
 
         // Remove old refresh token from refresh token array
-        const newRefreshToken = foundUser.refresh_token.filter(
+        const newRefreshTokenArr = foundUser.refresh_token.filter(
           (rToken) => rToken !== oldToken
         );
-
-        // Remove current access cookie
-        res.clearCookie("auth_token", {
-          httpOnly: true,
-          secure: true,
-          sameSite: "none",
-        });
 
         // When occured an error, means that token is not verfied.
         // save token array and back forbiden error
         if (err) {
-          foundUser.refresh_token = [...newRefreshToken];
+          foundUser.refresh_token = [...newRefreshTokenArr];
           await foundUser.save();
+          return res.sendStatus(403);
         }
-        if (err || foundUser._id !== decoded.id)
-          return res.send(403).json({ message: "Forbiden" });
+
+        // When occured an error and found user ist diffrent with
+        if (foundUser._id.toString() !== decoded.id.toString()) {
+          return res.sendStatus(403);
+        }
 
         // Create new access and refresh tokens
         const [accessToken, refreshToken] = tokenCreator(foundUser._id);
-        foundUser.refresh_token = [...newRefreshToken, refreshToken];
-        await foundUser.save();
+        foundUser.refresh_token = [...newRefreshTokenArr, refreshToken];
+        console.log(foundUser);
+        await foundUser.updateOne();
 
         // send new refresh token as cookie to client
         res.cookie("auth_token", refreshToken, {
@@ -246,7 +254,7 @@ export const renewToken = async (
         // });
 
         // send user access token and information to client
-        res.json({
+        return res.json({
           accessToken: accessToken,
           fname: foundUser.fname,
           lname: foundUser.lname,
@@ -258,7 +266,9 @@ export const renewToken = async (
         });
       }
     );
-  } catch (err) {}
+  } catch (err) {
+    return err;
+  }
 };
 
 // Create refresh and access token
