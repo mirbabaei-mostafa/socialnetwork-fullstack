@@ -141,27 +141,24 @@ export const userSlice = createSlice({
         isLoading: true,
       };
     });
-    builder.addCase(
-      doAuth.fulfilled,
-      (state, action: PayloadAction<UserInfo>) => {
-        return {
-          ...state,
-          isLoading: false,
-          error: "",
-          userInfo: {
-            ...state.userInfo,
-            accessToken: action.payload?.accessToken,
-            fname: action.payload?.fname,
-            lname: action.payload?.lname,
-            email: action.payload?.email,
-            username: action.payload?.username,
-            image: action.payload?.image,
-            avatar: action.payload?.avatar,
-            cover: action.payload?.cover,
-          },
-        };
-      }
-    );
+    builder.addCase(doAuth.fulfilled, (state, action) => {
+      return {
+        ...state,
+        isLoading: false,
+        error: "",
+        userInfo: {
+          ...state.userInfo,
+          accessToken: action.payload?.accessToken,
+          fname: action.payload?.fname,
+          lname: action.payload?.lname,
+          email: action.payload?.email,
+          username: action.payload?.username,
+          image: action.payload?.image,
+          avatar: action.payload?.avatar,
+          cover: action.payload?.cover,
+        },
+      };
+    });
     builder.addCase(doAuth.rejected, (state, action) => {
       return {
         ...state,
@@ -186,27 +183,24 @@ export const userSlice = createSlice({
         isLoading: true,
       };
     });
-    builder.addCase(
-      renewToken.fulfilled,
-      (state, action: PayloadAction<UserInfo>) => {
-        return {
-          ...state,
-          isLoading: false,
-          error: "",
-          userInfo: {
-            ...state.userInfo,
-            accessToken: action.payload?.accessToken,
-            fname: action.payload?.fname,
-            lname: action.payload?.lname,
-            email: action.payload?.email,
-            username: action.payload?.username,
-            image: action.payload?.image,
-            avatar: action.payload?.avatar,
-            cover: action.payload?.cover,
-          },
-        };
-      }
-    );
+    builder.addCase(renewToken.fulfilled, (state, action) => {
+      return {
+        ...state,
+        isLoading: false,
+        error: "",
+        userInfo: {
+          ...state.userInfo,
+          accessToken: action.payload?.accessToken,
+          fname: action.payload?.fname,
+          lname: action.payload?.lname,
+          email: action.payload?.email,
+          username: action.payload?.username,
+          image: action.payload?.image,
+          avatar: action.payload?.avatar,
+          cover: action.payload?.cover,
+        },
+      };
+    });
     builder.addCase(renewToken.rejected, (state, action) => {
       return {
         ...state,

@@ -206,7 +206,7 @@ export const renewToken = async (
           });
           if (hackedUser) {
             hackedUser.refresh_token = [];
-            await hackedUser.save();
+            await hackedUser.updateOne();
           }
           return res.sendStatus(403).json({ message: "Forbiden" });
         }
@@ -232,7 +232,6 @@ export const renewToken = async (
         // Create new access and refresh tokens
         const [accessToken, refreshToken] = tokenCreator(foundUser._id);
         foundUser.refresh_token = [...newRefreshTokenArr, refreshToken];
-        console.log(foundUser);
         await foundUser.updateOne();
 
         // send new refresh token as cookie to client
