@@ -1,17 +1,22 @@
-import MenuPages from "./MenuPages";
-import SearchBox from "./SearchBox";
+import MenuPages from './MenuPages';
+import SearchBox from './SearchBox';
+import SettingMenu from './SettingMenu';
 
 const Header = () => {
   return (
-    <div className="flex flex-row items-center justify-between gap-5 place-items-center">
-      {/* Logo and search box */}
-      <SearchBox />
-      {/* Pages box */}
-      <div className="flex-grow-[3]">
-        <MenuPages />
+    <div className="fixed w-full h-12 bg-white shadow-md shadow-gray-600">
+      <div className="flex flex-row items-center justify-between gap-5 place-items-center w-full">
+        {/* Logo and search box */}
+        <SearchBox />
+        {/* Pages box */}
+        <div className="flex-grow-[4]">
+          <MenuPages />
+        </div>
+        {/* Setting box */}
+        <div className="flex-grow">
+          <SettingMenu />
+        </div>
       </div>
-      {/* Setting box */}
-      <div className="flex-grow">Setting</div>
     </div>
   );
 };

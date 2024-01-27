@@ -1,0 +1,111 @@
+[
+  {
+    "maintitle": "Social",
+    "submenu": [
+      {
+        "title": "Events",
+        "link": "",
+        "Description": "Organize or find events and other things to do online and nearby.",
+        "image": "./images/menu/events.png"
+      },
+      {
+        "title": "Find friends",
+        "link": "",
+        "Description": "Search for friends or people you may know.",
+        "image": "./images/menu/findfriends.png"
+      },
+      {
+        "title": "Groups",
+        "link": "",
+        "Description": "Connect with people who share your interests.",
+        "image": "./images/menu/events.png"
+      },
+      {
+        "title": "News Feed",
+        "link": "",
+        "Description": "See relevant posts from people and Pages you follow.",
+        "image": "./images/menu/newsfeeds.png"
+      },
+      {
+        "title": "Feeds",
+        "link": "",
+        "Description": "See the most recent posts from your friends, groups, Pages and more.",
+        "image": "./images/menu/feeds.png"
+      },
+      {
+        "title": "Pages",
+        "link": "",
+        "Description": "Discover and connect with businesses on Facebook.",
+        "image": "./images/menu/pages.png"
+      }
+    ]
+  },
+  {
+    "maintitle": "Entertainment",
+    "submenu": [
+      {
+        "title": "Gaming Video",
+        "link": "",
+        "Description": "Watch and connect with your favorite games and streamers.",
+        "image": "./images/menu/gamingvideos.png"
+      },
+      {
+        "title": "Play Games",
+        "link": "",
+        "Description": "Play your favorite games.",
+        "image": "./images/menu/playgames.png"
+      },
+      {
+        "title": "Video",
+        "link": "",
+        "Description": "A video destination personalized to your interests and connections.",
+        "image": "./images/menu/videos.png"
+      }
+    ]
+  },
+  {
+    "maintitle": "Personal",
+    "submenu": [
+      {
+        "title": "Recent ad activity",
+        "link": "",
+        "Description": "See all the ads you interacted with on Facebook.",
+        "image": "./images/menu/recentsadactivities.png"
+      },
+      {
+        "title": "Memories",
+        "link": "",
+        "Description": "Browse your old photos, videos and posts on Facebook.",
+        "image": "./images/menu/memories.png"
+      },
+      {
+        "title": "Saved",
+        "link": "",
+        "Description": "Find posts, photos and videos that you saved for later.",
+        "image": "./images/menu/saved.png"
+      }
+    ]
+  },
+  {
+    "maintitle": "Professional",
+    "submenu": [
+      {
+        "title": "Ads Manager",
+        "link": "",
+        "Description": "Create, manage and track the performance of your ads.",
+        "image": "./images/menu/adsmanager.png"
+      }
+    ]
+  },
+  {
+    "maintitle": "Community Resources",
+    "submenu": [
+      {
+        "title": "Fundraisers",
+        "link": "",
+        "Description": "Donate and raise money for nonprofits and personal causes.",
+        "image": "./images/menu/fundraisers.png"
+      }
+    ]
+  }
+]

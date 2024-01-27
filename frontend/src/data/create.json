@@ -1,0 +1,47 @@
+[
+  {
+    "title": "Post",
+    "link": "/create/post",
+    "icon": "./images/menu/"
+  },
+  {
+    "title": "Story",
+    "link": "/create/story",
+    "icon": "./images/menu/"
+  },
+  {
+    "title": "Room",
+    "link": "/create/room",
+    "icon": "./images/menu/"
+  },
+  {
+    "title": "Page",
+    "link": "/create/page",
+    "icon": "./images/menu/"
+  },
+  {
+    "title": "Ad",
+    "link": "/create/ad",
+    "icon": "./images/menu/"
+  },
+  {
+    "title": "Group",
+    "link": "/create/group",
+    "icon": "./images/menu/"
+  },
+  {
+    "title": "Event",
+    "link": "/create/event",
+    "icon": "./images/menu/"
+  },
+  {
+    "title": "Marketplace",
+    "link": "/create/marketplace",
+    "icon": "./images/menu/"
+  },
+  {
+    "title": "Job",
+    "link": "/create/job",
+    "icon": "./images/menu/"
+  }
+]

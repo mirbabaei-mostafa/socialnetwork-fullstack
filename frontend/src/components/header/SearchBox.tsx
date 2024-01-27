@@ -1,12 +1,12 @@
-import React, { MutableRefObject, useRef, useState } from "react";
-import { useTranslation } from "react-i18next";
-import { IoIosArrowBack, IoIosSearch } from "react-icons/io";
-import { UserState } from "../../redux/slices/userSlice";
-import { useAppSelector } from "../../redux/hooks";
-import { RootState } from "../../redux/store";
-import { shallowEqual } from "react-redux";
-import { IoMdCloseCircle } from "react-icons/io";
-import useClickOutside from "../../hooks/useClickOutside";
+import React, { MutableRefObject, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { IoIosArrowBack, IoIosSearch } from 'react-icons/io';
+import { UserState } from '../../redux/slices/userSlice';
+import { useAppSelector } from '../../redux/hooks';
+import { RootState } from '../../redux/store';
+import { shallowEqual } from 'react-redux';
+import { IoMdCloseCircle } from 'react-icons/io';
+import useClickOutside from '../../hooks/useClickOutside';
 
 const SearchBox = () => {
   const { t } = useTranslation();
@@ -23,7 +23,7 @@ const SearchBox = () => {
   // const searchIconRef = useRef<HTMLSpanElement>(null);
   const searchIconRef = useRef() as MutableRefObject<HTMLSpanElement>;
 
-  // useClickOutside(searchPannel, () => setSearch(false));
+  // Hook to hide search result, when user clicked outside
   useClickOutside(searchPannel, setSearch);
 
   return (
@@ -36,7 +36,7 @@ const SearchBox = () => {
           <input
             type="text"
             onClick={() => setSearch(true)}
-            placeholder={t("Search")}
+            placeholder={t('Search')}
             className="w-[200px] h-7 border-none rounded-full hidden xl:block py-1 pl-9 pr-1 font-sans text-xs text-gray-700 bg-gray-200"
           />
           <span
@@ -64,15 +64,15 @@ const SearchBox = () => {
                 type="text"
                 autoFocus={true}
                 onFocus={() => {
-                  (searchRef.current.style.paddingLeft as string) = "8px";
-                  searchIconRef.current.style.display = "none";
+                  (searchRef.current.style.paddingLeft as string) = '8px';
+                  searchIconRef.current.style.display = 'none';
                 }}
                 onBlur={() => {
-                  searchRef.current.style.paddingLeft = "36px";
-                  searchIconRef.current.style.display = "block";
+                  searchRef.current.style.paddingLeft = '36px';
+                  searchIconRef.current.style.display = 'block';
                 }}
                 onClick={() => setSearch(true)}
-                placeholder={t("Search")}
+                placeholder={t('Search')}
                 ref={searchRef}
                 className="w-[200px] h-7 border-none rounded-full py-1 pl-9 pr-1 font-sans text-xs text-gray-700 bg-gray-200"
               />
@@ -86,7 +86,7 @@ const SearchBox = () => {
           </div>
           <div className="flex flex-row justify-between items-center py-2">
             <div className="text-gray-800 font-headline font-bold text-[14px]">
-              {t("RecentSearchs")}
+              {t('RecentSearchs')}
             </div>
             <div>
               <a href="">Edit</a>
@@ -99,7 +99,7 @@ const SearchBox = () => {
                 className="w-8 p-1 rounded-full"
               />
               <span className="pl-2 text-sm font-normal text-gray-700 font-roboto">
-                {userState.userInfo.fname + " " + userState.userInfo.lname}
+                {userState.userInfo.fname + ' ' + userState.userInfo.lname}
               </span>
             </div>
             <div className="w-4 cursor-pointer pr-2">
