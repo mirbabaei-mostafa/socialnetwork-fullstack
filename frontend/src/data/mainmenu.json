@@ -4,37 +4,37 @@
     "submenu": [
       {
         "title": "Events",
-        "link": "",
+        "link": "/events",
         "Description": "Organize or find events and other things to do online and nearby.",
         "image": "./images/menu/events.png"
       },
       {
         "title": "Find friends",
-        "link": "",
+        "link": "/friends",
         "Description": "Search for friends or people you may know.",
         "image": "./images/menu/findfriends.png"
       },
       {
         "title": "Groups",
-        "link": "",
+        "link": "/groups",
         "Description": "Connect with people who share your interests.",
         "image": "./images/menu/events.png"
       },
       {
         "title": "News Feed",
-        "link": "",
+        "link": "/newsfeed",
         "Description": "See relevant posts from people and Pages you follow.",
         "image": "./images/menu/newsfeeds.png"
       },
       {
         "title": "Feeds",
-        "link": "",
+        "link": "/feeds",
         "Description": "See the most recent posts from your friends, groups, Pages and more.",
         "image": "./images/menu/feeds.png"
       },
       {
         "title": "Pages",
-        "link": "",
+        "link": "/pages",
         "Description": "Discover and connect with businesses on Facebook.",
         "image": "./images/menu/pages.png"
       }
@@ -45,19 +45,19 @@
     "submenu": [
       {
         "title": "Gaming Video",
-        "link": "",
+        "link": "/videogames",
         "Description": "Watch and connect with your favorite games and streamers.",
         "image": "./images/menu/gamingvideos.png"
       },
       {
         "title": "Play Games",
-        "link": "",
+        "link": "/playgames",
         "Description": "Play your favorite games.",
         "image": "./images/menu/playgames.png"
       },
       {
         "title": "Video",
-        "link": "",
+        "link": "/videos",
         "Description": "A video destination personalized to your interests and connections.",
         "image": "./images/menu/videos.png"
       }
@@ -68,19 +68,19 @@
     "submenu": [
       {
         "title": "Recent ad activity",
-        "link": "",
+        "link": "/recentad",
         "Description": "See all the ads you interacted with on Facebook.",
         "image": "./images/menu/recentsadactivities.png"
       },
       {
         "title": "Memories",
-        "link": "",
+        "link": "/memories",
         "Description": "Browse your old photos, videos and posts on Facebook.",
         "image": "./images/menu/memories.png"
       },
       {
         "title": "Saved",
-        "link": "",
+        "link": "/saved",
         "Description": "Find posts, photos and videos that you saved for later.",
         "image": "./images/menu/saved.png"
       }
@@ -91,7 +91,7 @@
     "submenu": [
       {
         "title": "Ads Manager",
-        "link": "",
+        "link": "/admanager",
         "Description": "Create, manage and track the performance of your ads.",
         "image": "./images/menu/adsmanager.png"
       }
@@ -102,7 +102,7 @@
     "submenu": [
       {
         "title": "Fundraisers",
-        "link": "",
+        "link": "/fundraisers",
         "Description": "Donate and raise money for nonprofits and personal causes.",
         "image": "./images/menu/fundraisers.png"
       }

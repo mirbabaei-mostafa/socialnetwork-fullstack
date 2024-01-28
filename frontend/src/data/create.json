@@ -2,46 +2,46 @@
   {
     "title": "Post",
     "link": "/create/post",
-    "icon": "./images/menu/"
+    "icon": "./images/menu/createpost.png"
   },
   {
     "title": "Story",
     "link": "/create/story",
-    "icon": "./images/menu/"
+    "icon": "./images/menu/createstory.png"
   },
   {
-    "title": "Room",
-    "link": "/create/room",
-    "icon": "./images/menu/"
+    "title": "Reel",
+    "link": "/create/reel",
+    "icon": "./images/menu/createreel.png"
+  },
+  {
+    "title": "Life event",
+    "link": "/create/lifeevent",
+    "icon": "./images/menu/createevent.png"
   },
   {
     "title": "Page",
     "link": "/create/page",
-    "icon": "./images/menu/"
+    "icon": "./images/menu/createpage.png"
   },
   {
     "title": "Ad",
     "link": "/create/ad",
-    "icon": "./images/menu/"
+    "icon": "./images/menu/createad.png"
   },
   {
     "title": "Group",
     "link": "/create/group",
-    "icon": "./images/menu/"
+    "icon": "./images/menu/creategroup.png"
   },
   {
     "title": "Event",
     "link": "/create/event",
-    "icon": "./images/menu/"
-  },
-  {
-    "title": "Marketplace",
-    "link": "/create/marketplace",
-    "icon": "./images/menu/"
+    "icon": "./images/menu/createevents.png"
   },
   {
     "title": "Job",
     "link": "/create/job",
-    "icon": "./images/menu/"
+    "icon": "./images/menu/createjob.png"
   }
 ]

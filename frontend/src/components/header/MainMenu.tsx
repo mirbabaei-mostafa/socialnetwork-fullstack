@@ -1,16 +1,16 @@
-import { ChangeEvent, MutableRefObject, useRef, useState } from "react";
-import { useTranslation } from "react-i18next";
-import { IoIosMenu, IoIosSearch } from "react-icons/io";
-import useClickOutside from "../../hooks/useClickOutside";
-import MenuList from "../../data/mainmenu.json";
-import CreateList from "../../data/create.json";
-import { Link } from "react-router-dom";
-import { MdEdit } from "react-icons/md";
+import { ChangeEvent, MutableRefObject, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { IoIosMenu, IoIosSearch } from 'react-icons/io';
+import useClickOutside from '../../hooks/useClickOutside';
+import MenuList from '../../data/mainmenu.json';
+import CreateList from '../../data/create.json';
+import { Link } from 'react-router-dom';
+import { MdEdit } from 'react-icons/md';
 
 const MainMenu = () => {
   const { t } = useTranslation();
   const [isMainPannel, setMainPannel] = useState<boolean>(false);
-  const [menuSearch, setMenuSearch] = useState<string>("");
+  const [menuSearch, setMenuSearch] = useState<string>('');
 
   const mainMenuPannel = useRef() as MutableRefObject<HTMLDivElement>;
 
@@ -28,13 +28,14 @@ const MainMenu = () => {
       {isMainPannel && (
         <div
           ref={mainMenuPannel}
-          className="absolute botton-[26px] -right-[120px] flex flex-col w-96 lg:w-[600px] shadow-md shadow-gray-400 rounded-md bg-white p-3 h-[92vh] md:overflow-scroll sm:overflow-scroll"
+          className="absolute botton-[26px] -right-[120px] flex flex-col w-[350px] md:w-[600px] shadow-md shadow-gray-400 rounded-md bg-white p-3 h-[92vh] overflow-y-scroll scrollbar-thin  scrollbar-thumb-gray-200  scrollbar-thumb-rounded-md"
         >
           <div className="font-headline text-gray-700 font-bold text-xl">
-            {t("Menu")}
+            {t('Menu')}
           </div>
-          <div className="flex lg:flex-row flex-col lg:justify-between lg:gap-2">
-            <div className="w-96 lg:flex-grow-[2] flex flex-col shadow-md shadow-gray-300 p-1  lg:overflow-scroll h-[85vh]">
+          <div className="flex flex-col lg:flex-row lg:justify-between lg:gap-2">
+            {/* Main Menu */}
+            <div className="w-[320px] md:w-[338px] flex flex-col shadow-md shadow-gray-300 p-2">
               {/* Search in main menu */}
               <div className="py-4 relative">
                 <input
@@ -42,7 +43,7 @@ const MainMenu = () => {
                   onChange={(e: ChangeEvent<HTMLInputElement>) =>
                     setMenuSearch(e.target.value)
                   }
-                  placeholder={t("SearchMenu")}
+                  placeholder={t('SearchMenu')}
                   className="bg-gray-200 font-roboto text-[11px] text-gray-700 rounded-2xl py-1 pl-7 border-0 w-64"
                 />
                 <span className="absolute left-[6px] top-[21px]">
@@ -79,22 +80,23 @@ const MainMenu = () => {
                           </div>
                         </div>
                       ) : (
-                        ""
+                        ''
                       );
                     })}
                   </>
                 );
               })}
             </div>
-            <div className="w-96 lg:flex-grow flex flex-col shadow-md shadow-gray-300 p-3 h-[85vh] lg:overflow-scroll">
+            {/* Create Menu */}
+            <div className="w-[320px] flex flex-col shadow-md shadow-gray-300 p-3 md:fixed md:right-[32px] md:top-[74px] md:w-[220px] overflow-hidden">
               <div className="font-bold font-headline text-[16px] text-gray-500">
-                {t("Create")}
+                {t('Create')}
               </div>
               {CreateList.map((create) => {
                 return (
-                  <div className="flex flex-row justify-start gap-3 items-center py-2">
-                    <div className="">
-                      <img src={create.icon} className="w-7 h-7" />
+                  <div className="flex flex-row justify-start gap-3 items-center px-2 py-2 hover:rounded-lg hover:bg-gray-100">
+                    <div className=" rounded-full p-2 bg-gray-200">
+                      <img src={create.icon} className="w-6 h-6" />
                     </div>
                     <Link
                       to={create.link}

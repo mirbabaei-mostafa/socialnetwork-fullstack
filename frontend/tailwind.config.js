@@ -1,6 +1,7 @@
 /** @type {import('tailwindcss').Config} */
 export default {
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx, mdx}"],
+  darkMode: "class", // enable dark mode
   theme: {
     extend: {
       colors: {
@@ -30,5 +31,5 @@ export default {
       body: ["Open Sans", "Roboto"],
     },
   },
-  plugins: [require("@tailwindcss/forms")],
+  plugins: [require("@tailwindcss/forms"), require("tailwind-scrollbar")],
 };
