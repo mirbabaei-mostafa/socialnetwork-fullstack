@@ -1,8 +1,8 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
 
 const useDarkSide = () => {
-  const [theme, setTheme] = useState(localStorage.theme);
-  const colorTheme = theme === "dark" ? "light" : "dark";
+  const [theme, setTheme] = useState<string>(localStorage.theme);
+  const colorTheme = theme === 'dark' ? 'light' : 'dark';
 
   useEffect(() => {
     const root = window.document.documentElement;
@@ -10,7 +10,7 @@ const useDarkSide = () => {
     root.classList.add(theme);
 
     // save theme to local storage
-    localStorage.setItem("theme", theme);
+    localStorage.setItem('theme', theme);
   }, [theme, colorTheme]);
 
   return [colorTheme, setTheme];

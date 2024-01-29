@@ -1,8 +1,8 @@
-import { BrowserRouter, Route, Routes } from "react-router-dom";
-import Signin from "./pages/Signin";
-import PersistAuth from "./components/authentications/PersistAuth";
-import Home from "./pages/Home";
-import NotAuthentication from "./components/authentications/NotAuthentication";
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import Signin from './pages/Signin';
+import PersistAuth from './components/authentications/PersistAuth';
+import Home from './pages/Home';
+import NotAuthentication from './components/authentications/NotAuthentication';
 function App() {
   return (
     <BrowserRouter>
