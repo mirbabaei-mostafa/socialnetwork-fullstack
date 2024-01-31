@@ -12,6 +12,7 @@ function App() {
         </Route>
         <Route element={<PersistAuth />}>
           <Route path="/" element={<Home />} />
+          <Route path="*" element={<Home />} />
         </Route>
       </Routes>
     </BrowserRouter>

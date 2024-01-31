@@ -1,0 +1,32 @@
+[
+  {
+    "username": "User",
+    "userimage": "./upload/peoples/people01.jpg",
+    "image": "./upload/stories/story01.jpg",
+    "title": "Story title"
+  },
+  {
+    "username": "Sample",
+    "userimage": "./upload/peoples/people02.jpg",
+    "image": "./upload/stories/story02.jpg",
+    "title": "Story title"
+  },
+  {
+    "username": "Karbar",
+    "userimage": "./upload/peoples/people03.jpg",
+    "image": "./upload/stories/story03.jpg",
+    "title": "Story title"
+  },
+  {
+    "username": "Mostafa",
+    "userimage": "./upload/peoples/people04.jpg",
+    "image": "./upload/stories/story04.jpg",
+    "title": "Story title"
+  },
+  {
+    "username": "Mahsa",
+    "userimage": "./upload/peoples/people05.jpg",
+    "image": "./upload/stories/story05.jpg",
+    "title": "Story title"
+  }
+]

@@ -1,4 +1,5 @@
 {
+  "SiteTitle": "Social Network",
   "FirstName": "First Name",
   "LastName": "Last Name",
   "Email": "Email",
@@ -62,5 +63,10 @@
   "ShowPreviewClicking": "Show preview after clicking",
   "DontShowPreview": "Don't show preview",
   "Keyboard": "Keyboard",
-  "": ""
+  "FindFriends": "Find friends",
+  "Memories": "Memories",
+  "GroupConversations": "Group conversations",
+  "CreateNewGroup": "Create new group",
+  "CreateStory": "Create story",
+  "CreateStoryDesc": "Share a photo or write something"
 }

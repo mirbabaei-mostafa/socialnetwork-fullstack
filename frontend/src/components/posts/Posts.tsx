@@ -1,7 +1,13 @@
-import React from "react";
+import Stories from './Stories';
 
 const Posts = () => {
-  return <div>Posts</div>;
+  return (
+    <div className="flex flex-col items-center md:w-[780px] w-[360px]">
+      <div>
+        <Stories />
+      </div>
+    </div>
+  );
 };
 
 export default Posts;

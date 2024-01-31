@@ -1,0 +1,82 @@
+[
+  {
+    "title": "Find friends",
+    "link": "/friends",
+    "image": "./images/menu/findfriends.png"
+  },
+  {
+    "title": "Memories",
+    "link": "/memories",
+    "image": "./images/menu/memories.png"
+  },
+  {
+    "title": "Saved",
+    "link": "/saved",
+    "image": "./images/menu/saved.png"
+  },
+  {
+    "title": "Groups",
+    "link": "/groups",
+    "image": "./images/menu/events.png"
+  },
+  {
+    "title": "Video",
+    "link": "/videos",
+    "image": "./images/menu/videos.png"
+  },
+  {
+    "title": "Feeds",
+    "link": "/feeds",
+    "image": "./images/menu/feeds.png"
+  },
+  {
+    "title": "Events",
+    "link": "/events",
+    "image": "./images/menu/events.png"
+  },
+  {
+    "title": "Ads Manager",
+    "link": "/admanager",
+    "image": "./images/menu/adsmanager.png"
+  },
+  {
+    "title": "Fundraisers",
+    "link": "/fundraisers",
+    "image": "./images/menu/fundraisers.png"
+  },
+  {
+    "title": "Play Games",
+    "link": "/playgames",
+    "image": "./images/menu/playgames.png"
+  },
+  {
+    "title": "Gaming Video",
+    "link": "/videogames",
+    "image": "./images/menu/gamingvideos.png"
+  },
+  {
+    "title": "Messenger",
+    "link": "/messenger",
+    "image": "./images/menu/messenger.png"
+  },
+  {
+    "title": "Messenger Kids",
+    "link": "/messengerkids",
+    "image": "./images/menu/messengerkids.png"
+  },
+  {
+    "title": "Pages",
+    "link": "/pages",
+    "image": "./images/menu/pages.png"
+  },
+  {
+    "title": "News Feed",
+    "link": "/newsfeed",
+    "image": "./images/menu/newsfeeds.png"
+  },
+  {
+    "title": "Recent ad activity",
+    "link": "/recentad",
+    "image": "./images/menu/recentsadactivities.png"
+  }
+]

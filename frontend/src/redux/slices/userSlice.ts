@@ -1,6 +1,6 @@
-import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { RootState } from "../store";
-import axios from "../../utils/axios";
+import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { RootState } from '../store';
+import axios, { axiosPrivate } from '../../utils/axios';
 
 // https://blog.logrocket.com/handling-user-authentication-redux-toolkit/
 // https://github.com/bezkoder/redux-toolkit-authentication/
@@ -29,17 +29,17 @@ export interface UserState {
 // Define the initial state using that type
 const initialState: UserState = {
   userInfo: {
-    accessToken: "",
-    fname: "",
-    lname: "",
-    email: "",
-    username: "",
-    image: "",
-    avatar: "",
-    cover: "",
+    accessToken: '',
+    fname: '',
+    lname: '',
+    email: '',
+    username: '',
+    image: '',
+    avatar: '',
+    cover: '',
   },
   isLoading: false,
-  error: "",
+  error: '',
 };
 
 interface UserI {
@@ -48,88 +48,111 @@ interface UserI {
 }
 
 export const doAuth = createAsyncThunk(
-  "user/auth",
+  'user/auth',
   async (authInfo: UserI, { rejectWithValue }) => {
     try {
-      const response = await axios.post("/api/auth", JSON.stringify(authInfo), {
-        headers: { "Content-Type": "application/json" },
-        withCredentials: true,
-      });
+      // const response = await axios.post('/api/auth', JSON.stringify(authInfo), {
+      //   headers: { 'Content-Type': 'application/json' },
+      //   withCredentials: true,
+      // });
+      const response = await axiosPrivate.post(
+        '/api/auth',
+        JSON.stringify(authInfo)
+      );
       return response.data;
       // .then((response) => response.data);
     } catch (err: unknown | any) {
       if (!err?.response) {
-        return rejectWithValue("ServerIsNotAccessable");
+        return rejectWithValue('ServerIsNotAccessable');
       } else if (err?.response?.status === 400) {
         return rejectWithValue(
           err?.response?.data.error
             ? err?.response?.data.error
-            : "InvalidEmailPassword"
+            : 'InvalidEmailPassword'
         );
       } else if (err?.response?.status === 401) {
         return rejectWithValue(
           err?.response?.data.error
             ? err?.response?.data.error
-            : "IncorectEmailPassword"
+            : 'IncorectEmailPassword'
         );
       } else if (err?.response?.status === 403) {
         return rejectWithValue(
-          err?.response?.data.error ? err?.response?.data.error : "Forbiden"
+          err?.response?.data.error ? err?.response?.data.error : 'Forbiden'
         );
       } else if (err instanceof Error) {
         return rejectWithValue(err.message);
       } else {
-        return rejectWithValue("GeneralError");
+        return rejectWithValue('GeneralError');
       }
     }
   }
 );
 
 export const renewToken = createAsyncThunk(
-  "user/token",
+  'user/token',
   async (authInfo: string, { rejectWithValue }) => {
     try {
-      const response = await axios.get("/api/renew", {
-        headers: { "Content-Type": "application/json" },
-        withCredentials: true,
-      });
+      // const response = await axios.get('/api/renew', {
+      //   headers: { 'Content-Type': 'application/json' },
+      //   withCredentials: true,
+      // });
+      const response = await axiosPrivate.get('/api/renew');
       return response.data;
       // .then((response) => response.data);
     } catch (err: unknown | any) {
       if (!err?.response) {
-        return rejectWithValue("ServerIsNotAccessable");
+        return rejectWithValue('ServerIsNotAccessable');
       } else if (err?.response?.status === 403) {
         return rejectWithValue(
-          err?.response?.data.error ? err?.response?.data.error : "Forbiden"
+          err?.response?.data.error ? err?.response?.data.error : 'Forbiden'
         );
       } else if (err instanceof Error) {
         return rejectWithValue(err.message);
       } else {
-        return rejectWithValue("GeneralError");
+        return rejectWithValue('GeneralError');
       }
     }
   }
 );
 
 export const userSlice = createSlice({
-  name: "user",
+  name: 'user',
   initialState,
   reducers: {
     signout: (state) => {
       return {
         ...state,
         isLoading: false,
-        error: "",
+        error: '',
         userInfo: {
           ...state.userInfo,
-          accessToken: "",
-          fname: "",
-          lname: "",
-          email: "",
-          username: "",
-          image: "",
-          avatar: "",
-          cover: "",
+          accessToken: '',
+          fname: '',
+          lname: '',
+          email: '',
+          username: '',
+          image: '',
+          avatar: '',
+          cover: '',
+        },
+      };
+    },
+    renew: (state, action: PayloadAction<UserInfo>) => {
+      return {
+        ...state,
+        isLoading: false,
+        error: '',
+        userInfo: {
+          ...state.userInfo,
+          accessToken: action.payload?.accessToken,
+          fname: action.payload?.fname,
+          lname: action.payload?.lname,
+          email: action.payload?.email,
+          username: action.payload?.username,
+          image: action.payload?.image,
+          avatar: action.payload?.avatar,
+          cover: action.payload?.cover,
         },
       };
     },
@@ -147,7 +170,7 @@ export const userSlice = createSlice({
         return {
           ...state,
           isLoading: false,
-          error: "",
+          error: '',
           userInfo: {
             ...state.userInfo,
             accessToken: action.payload?.accessToken,
@@ -169,14 +192,14 @@ export const userSlice = createSlice({
         error: (action.payload as string) || (action.error.message as string),
         userInfo: {
           ...state.userInfo,
-          accessToken: "",
-          fname: "",
-          lname: "",
-          email: "",
-          username: "",
-          image: "",
-          avatar: "",
-          cover: "",
+          accessToken: '',
+          fname: '',
+          lname: '',
+          email: '',
+          username: '',
+          image: '',
+          avatar: '',
+          cover: '',
         },
       };
     });
@@ -192,7 +215,7 @@ export const userSlice = createSlice({
         return {
           ...state,
           isLoading: false,
-          error: "",
+          error: '',
           userInfo: {
             ...state.userInfo,
             accessToken: action.payload?.accessToken,
@@ -214,21 +237,21 @@ export const userSlice = createSlice({
         error: (action.payload as string) || (action.error.message as string),
         userInfo: {
           ...state.userInfo,
-          accessToken: "",
-          fname: "",
-          lname: "",
-          email: "",
-          username: "",
-          image: "",
-          avatar: "",
-          cover: "",
+          accessToken: '',
+          fname: '',
+          lname: '',
+          email: '',
+          username: '',
+          image: '',
+          avatar: '',
+          cover: '',
         },
       };
     });
   },
 });
 
-export const { signout } = userSlice.actions;
+export const { signout, renew } = userSlice.actions;
 
 export const userSelector = (state: RootState) => state.user;
 
