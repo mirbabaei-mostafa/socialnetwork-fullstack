@@ -1,6 +1,6 @@
-import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { RootState } from '../store';
-import axios, { axiosPrivate } from '../../utils/axios';
+import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { RootState } from "../store";
+import { axiosPrivate } from "../../utils/axios";
 
 // https://blog.logrocket.com/handling-user-authentication-redux-toolkit/
 // https://github.com/bezkoder/redux-toolkit-authentication/
@@ -18,6 +18,7 @@ export interface UserInfo {
   image: string;
   avatar: string;
   cover: string;
+  verify: boolean;
 }
 
 export interface UserState {
@@ -29,17 +30,18 @@ export interface UserState {
 // Define the initial state using that type
 const initialState: UserState = {
   userInfo: {
-    accessToken: '',
-    fname: '',
-    lname: '',
-    email: '',
-    username: '',
-    image: '',
-    avatar: '',
-    cover: '',
+    accessToken: "",
+    fname: "",
+    lname: "",
+    email: "",
+    username: "",
+    image: "",
+    avatar: "",
+    cover: "",
+    verify: false,
   },
   isLoading: false,
-  error: '',
+  error: "",
 };
 
 interface UserI {
@@ -48,93 +50,116 @@ interface UserI {
 }
 
 export const doAuth = createAsyncThunk(
-  'user/auth',
+  "user/auth",
   async (authInfo: UserI, { rejectWithValue }) => {
     try {
-      // const response = await axios.post('/api/auth', JSON.stringify(authInfo), {
+      // const response = await axios.post('/user/auth', JSON.stringify(authInfo), {
       //   headers: { 'Content-Type': 'application/json' },
       //   withCredentials: true,
       // });
       const response = await axiosPrivate.post(
-        '/api/auth',
+        "/user/auth",
         JSON.stringify(authInfo)
       );
       return response.data;
       // .then((response) => response.data);
     } catch (err: unknown | any) {
       if (!err?.response) {
-        return rejectWithValue('ServerIsNotAccessable');
+        return rejectWithValue("ServerIsNotAccessable");
       } else if (err?.response?.status === 400) {
         return rejectWithValue(
           err?.response?.data.error
             ? err?.response?.data.error
-            : 'InvalidEmailPassword'
+            : "InvalidEmailPassword"
         );
       } else if (err?.response?.status === 401) {
         return rejectWithValue(
           err?.response?.data.error
             ? err?.response?.data.error
-            : 'IncorectEmailPassword'
+            : "IncorectEmailPassword"
         );
       } else if (err?.response?.status === 403) {
         return rejectWithValue(
-          err?.response?.data.error ? err?.response?.data.error : 'Forbiden'
+          err?.response?.data.error ? err?.response?.data.error : "Forbiden"
         );
       } else if (err instanceof Error) {
         return rejectWithValue(err.message);
       } else {
-        return rejectWithValue('GeneralError');
+        return rejectWithValue("GeneralError");
       }
     }
   }
 );
 
 export const renewToken = createAsyncThunk(
-  'user/token',
+  "user/token",
   async (authInfo: string, { rejectWithValue }) => {
     try {
-      // const response = await axios.get('/api/renew', {
+      // const response = await axios.get('/user/renew', {
       //   headers: { 'Content-Type': 'application/json' },
       //   withCredentials: true,
       // });
-      const response = await axiosPrivate.get('/api/renew');
+      const response = await axiosPrivate.get("/user/renew");
       return response.data;
       // .then((response) => response.data);
     } catch (err: unknown | any) {
       if (!err?.response) {
-        return rejectWithValue('ServerIsNotAccessable');
+        return rejectWithValue("ServerIsNotAccessable");
       } else if (err?.response?.status === 403) {
         return rejectWithValue(
-          err?.response?.data.error ? err?.response?.data.error : 'Forbiden'
+          err?.response?.data.error ? err?.response?.data.error : "Forbiden"
         );
       } else if (err instanceof Error) {
         return rejectWithValue(err.message);
       } else {
-        return rejectWithValue('GeneralError');
+        return rejectWithValue("GeneralError");
+      }
+    }
+  }
+);
+
+export const doVerify = createAsyncThunk(
+  "user/activate",
+  async (token: string, { rejectWithValue }) => {
+    try {
+      const controller = new AbortController();
+      await axiosPrivate
+        .post("/user/activate", JSON.stringify({ token }), {
+          signal: controller.signal,
+        })
+        .then((res) => {
+          return res.data;
+        });
+    } catch (err: unknown | any) {
+      if (!err?.response) {
+        return rejectWithValue("ServerIsNotAccessable");
+      } else {
+        return rejectWithValue("InvalidToken");
       }
     }
   }
 );
 
 export const userSlice = createSlice({
-  name: 'user',
+  name: "user",
   initialState,
   reducers: {
     signout: (state) => {
       return {
         ...state,
         isLoading: false,
-        error: '',
+        error: "",
         userInfo: {
           ...state.userInfo,
-          accessToken: '',
-          fname: '',
-          lname: '',
-          email: '',
-          username: '',
-          image: '',
-          avatar: '',
-          cover: '',
+          accessToken: "",
+          fname: "",
+          lname: "",
+          email: "",
+          username: "",
+          image: "",
+          avatar: "",
+          cover: "",
+          verify: false,
         },
       };
     },
@@ -142,7 +167,7 @@ export const userSlice = createSlice({
       return {
         ...state,
         isLoading: false,
-        error: '',
+        error: "",
         userInfo: {
           ...state.userInfo,
           accessToken: action.payload?.accessToken,
@@ -153,6 +178,7 @@ export const userSlice = createSlice({
           image: action.payload?.image,
           avatar: action.payload?.avatar,
           cover: action.payload?.cover,
+          verify: action.payload?.verify,
         },
       };
     },
@@ -170,7 +196,7 @@ export const userSlice = createSlice({
         return {
           ...state,
           isLoading: false,
-          error: '',
+          error: "",
           userInfo: {
             ...state.userInfo,
             accessToken: action.payload?.accessToken,
@@ -181,6 +207,7 @@ export const userSlice = createSlice({
             image: action.payload?.image,
             avatar: action.payload?.avatar,
             cover: action.payload?.cover,
+            verify: action.payload?.verify,
           },
         };
       }
@@ -192,14 +219,15 @@ export const userSlice = createSlice({
         error: (action.payload as string) || (action.error.message as string),
         userInfo: {
           ...state.userInfo,
-          accessToken: '',
-          fname: '',
-          lname: '',
-          email: '',
-          username: '',
-          image: '',
-          avatar: '',
-          cover: '',
+          accessToken: "",
+          fname: "",
+          lname: "",
+          email: "",
+          username: "",
+          image: "",
+          avatar: "",
+          cover: "",
+          verify: false,
         },
       };
     });
@@ -215,7 +243,7 @@ export const userSlice = createSlice({
         return {
           ...state,
           isLoading: false,
-          error: '',
+          error: "",
           userInfo: {
             ...state.userInfo,
             accessToken: action.payload?.accessToken,
@@ -226,6 +254,7 @@ export const userSlice = createSlice({
             image: action.payload?.image,
             avatar: action.payload?.avatar,
             cover: action.payload?.cover,
+            verify: action.payload?.verify,
           },
         };
       }
@@ -237,15 +266,37 @@ export const userSlice = createSlice({
         error: (action.payload as string) || (action.error.message as string),
         userInfo: {
           ...state.userInfo,
-          accessToken: '',
-          fname: '',
-          lname: '',
-          email: '',
-          username: '',
-          image: '',
-          avatar: '',
-          cover: '',
+          accessToken: "",
+          fname: "",
+          lname: "",
+          email: "",
+          username: "",
+          image: "",
+          avatar: "",
+          cover: "",
+          verify: false,
         },
+      };
+    });
+    builder.addCase(doVerify.pending, (state) => {
+      return {
+        ...state,
+        isLoading: true,
+        error: "",
+      };
+    });
+    builder.addCase(doVerify.fulfilled, (state) => {
+      return {
+        ...state,
+        isLoading: false,
+        error: "",
+      };
+    });
+    builder.addCase(doVerify.rejected, (state, action) => {
+      return {
+        ...state,
+        isLoading: false,
+        error: (action.payload as string) || (action.error.message as string),
       };
     });
   },

@@ -1,16 +1,16 @@
-import { ChangeEvent, MutableRefObject, useRef, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { IoIosMenu, IoIosSearch } from 'react-icons/io';
-import useClickOutside from '../../hooks/useClickOutside';
-import MenuList from '../../data/mainmenu.json';
-import CreateList from '../../data/create.json';
-import { Link } from 'react-router-dom';
-import { MdEdit } from 'react-icons/md';
+import { ChangeEvent, MutableRefObject, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { IoIosMenu, IoIosSearch } from "react-icons/io";
+import useClickOutside from "../../hooks/useClickOutside";
+import MenuList from "../../data/mainmenu.json";
+import CreateList from "../../data/create.json";
+import { Link } from "react-router-dom";
+import { MdEdit } from "react-icons/md";
 
 const MainMenu = () => {
   const { t } = useTranslation();
   const [isMainPannel, setMainPannel] = useState<boolean>(false);
-  const [menuSearch, setMenuSearch] = useState<string>('');
+  const [menuSearch, setMenuSearch] = useState<string>("");
 
   const mainMenuPannel = useRef() as MutableRefObject<HTMLDivElement>;
 
@@ -31,7 +31,7 @@ const MainMenu = () => {
           className="absolute botton-[26px] -right-[120px] flex flex-col w-[350px] md:w-[600px] shadow-md shadow-gray-400 rounded-md bg-white p-3 h-[92vh] overflow-y-scroll scrollbar-thin  scrollbar-thumb-gray-200  scrollbar-thumb-rounded-md"
         >
           <div className="font-headline text-gray-700 font-bold text-xl">
-            {t('Menu')}
+            {t("Menu")}
           </div>
           <div className="flex flex-col lg:flex-row lg:justify-between lg:gap-2">
             {/* Main Menu */}
@@ -43,7 +43,7 @@ const MainMenu = () => {
                   onChange={(e: ChangeEvent<HTMLInputElement>) =>
                     setMenuSearch(e.target.value)
                   }
-                  placeholder={t('SearchMenu')}
+                  placeholder={t("SearchMenu")}
                   className="bg-gray-200 font-roboto text-[11px] text-gray-700 rounded-2xl py-1 pl-7 border-0 w-64"
                 />
                 <span className="absolute left-[6px] top-[21px]">
@@ -80,7 +80,7 @@ const MainMenu = () => {
                           </div>
                         </div>
                       ) : (
-                        ''
+                        ""
                       );
                     })}
                   </>
@@ -90,7 +90,7 @@ const MainMenu = () => {
             {/* Create Menu */}
             <div className="w-[320px] flex flex-col shadow-md shadow-gray-300 p-3 md:fixed md:right-[32px] md:top-[74px] md:w-[220px] overflow-hidden">
               <div className="font-bold font-headline text-[16px] text-gray-500">
-                {t('Create')}
+                {t("Create")}
               </div>
               {CreateList.map((create) => {
                 return (

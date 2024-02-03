@@ -68,5 +68,7 @@
   "GroupConversations": "Group conversations",
   "CreateNewGroup": "Create new group",
   "CreateStory": "Create story",
-  "CreateStoryDesc": "Share a photo or write something"
+  "CreateStoryDesc": "Share a photo or write something",
+  "ActivationAccount": "Verifing your account!",
+  "AccountVerified": "Your account verified."
 }

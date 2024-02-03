@@ -39,7 +39,7 @@ export const registerUser = async (
         process.env.JWT_TOKEN as string,
         { expiresIn: "30m" }
       );
-      const url: string = process.env.BASEURL + "/api/activate/" + mailToken;
+      const url: string = process.env.BASEURL + "/user/activate/" + mailToken;
       console.log(url);
       sendVerification(newUser.email, newUser.username, url);
 
@@ -62,25 +62,32 @@ export const verifyUser = async (
   const { token } = req.body;
 
   // To control if the token exist
-  !token && res.status(401).json({ message: "TokenNotValidated" });
+  if (!token) return res.status(401).json({ message: "TokenNotValidated" });
 
   try {
     // Compare recieved token with secret key
     const userId = jwt.verify(token, process.env.JWT_TOKEN as string);
-    !userId && res.status(401).json({ message: "TokenNotVerifiedOrExpired" });
+    if (!userId)
+      return res.status(401).json({ message: "TokenNotVerifiedOrExpired" });
 
     const foundUser = await userModel.findById((userId as any).id);
-    !foundUser && res.status(401).json({ message: "TokenNotAssignToUser" });
+    if (!foundUser)
+      return res.status(401).json({ message: "TokenNotAssignToUser" });
+
+    // to prevent access when user try to access with another access token
+    if (foundUser.id !== req.userId)
+      return res.status(403).json({ message: "TokenNotValidated" });
+
     if (foundUser!.verify) {
-      res.status(200).json({ message: "UserWasAlreadyVerified" });
+      return res.status(200).json({ message: "UserWasAlreadyVerified" });
     } else {
       // foundUser!.verify = true;
       // await foundUser?.save();
       await userModel.findByIdAndUpdate((userId as any).id, { verify: true });
-      res.status(200).json({ message: "UserActivated" });
+      return res.status(200).json({ message: "UserActivated" });
     }
   } catch (err) {
-    res.status(401).json({ message: err });
+    return res.status(401).json({ message: err });
   }
 };
 
@@ -162,6 +169,7 @@ export const authUser = async (
         image: foundUser.image,
         avatar: foundUser.avatar,
         cover: foundUser.cover,
+        verify: foundUser.verify,
       });
     } catch (err) {
       next(err);
@@ -208,7 +216,8 @@ export const renewToken = async (
             hackedUser.refresh_token = [];
             await hackedUser.updateOne();
           }
-          return res.sendStatus(403).json({ message: "Forbiden" });
+          // return res.sendStatus(403).json({ message: 'Forbiden' });
+          return res.sendStatus(403);
         }
 
         // Remove old refresh token from refresh token array
@@ -262,6 +271,7 @@ export const renewToken = async (
           image: foundUser.image,
           avatar: foundUser.avatar,
           cover: foundUser.cover,
+          verify: foundUser.verify,
         });
       }
     );

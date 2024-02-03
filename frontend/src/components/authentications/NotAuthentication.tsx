@@ -1,4 +1,4 @@
-import React, { useDeferredValue, useEffect } from "react";
+import { useDeferredValue, useEffect } from "react";
 import { UserState, renewToken } from "../../redux/slices/userSlice";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { RootState } from "../../redux/store";

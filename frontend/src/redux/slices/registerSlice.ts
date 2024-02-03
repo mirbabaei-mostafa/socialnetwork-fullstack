@@ -1,6 +1,6 @@
-import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import axios from "../../utils/axios";
-import { AxiosResponse } from "axios";
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import axios from '../../utils/axios';
+import { AxiosResponse } from 'axios';
 // import { RootState } from "../store";
 
 export interface NewUserInfo {
@@ -28,49 +28,49 @@ export interface RegisterState {
 
 const initialState: RegisterState = {
   userInfo: {
-    fname: "",
-    lname: "",
-    email: "",
+    fname: '',
+    lname: '',
+    email: '',
   },
   isLoading: false,
-  error: "",
+  error: '',
 };
 
 export const doRegister = createAsyncThunk(
-  "user/register",
+  'user/register',
   async (registerInfo: NewUserInfo, { rejectWithValue }) => {
     try {
       const response = await axios.post(
-        "/api/register",
+        '/user/register',
         JSON.stringify(registerInfo),
         {
-          headers: { "Content-Type": "application/json" },
+          headers: { 'Content-Type': 'application/json' },
           withCredentials: true,
         }
       );
       return response.data;
     } catch (err: unknown | any) {
       if (!err?.response) {
-        return rejectWithValue("ServerIsNotAccessable");
+        return rejectWithValue('ServerIsNotAccessable');
       } else if (err?.response) {
         return rejectWithValue(err?.response?.data.error);
       } else if (err instanceof Error) {
         return rejectWithValue(err.message);
       } else {
-        return rejectWithValue("GeneralError");
+        return rejectWithValue('GeneralError');
       }
     }
   }
 );
 
 export const registerSlice = createSlice({
-  name: "register",
+  name: 'register',
   initialState,
   reducers: {},
   extraReducers: (builder) => {
     builder.addCase(doRegister.pending, (state) => {
       state.isLoading = true;
-      state.error = "";
+      state.error = '';
     });
     builder.addCase(doRegister.fulfilled, (state, action) => {
       state.isLoading = false;
@@ -79,14 +79,14 @@ export const registerSlice = createSlice({
         lname: action.payload?.lname,
         email: action.payload?.email,
       };
-      state.error = "";
+      state.error = '';
     });
     builder.addCase(doRegister.rejected, (state, action) => {
       state.isLoading = false;
       state.userInfo = {
-        fname: "",
-        lname: "",
-        email: "",
+        fname: '',
+        lname: '',
+        email: '',
       };
       state.error =
         (action.payload as string) || (action.error.message as string);

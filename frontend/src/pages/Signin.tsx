@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import LoginComp from '../components/authentications/LoginComp';
-import RegisterForm from '../components/authentications/RegisterForm';
+import { useState } from "react";
+import { useTranslation } from "react-i18next";
+import LoginComp from "../components/authentications/LoginComp";
+import RegisterForm from "../components/authentications/RegisterForm";
+import { Helmet } from "react-helmet-async";
 
 const Signin = () => {
   const { t } = useTranslation();
@@ -9,6 +10,9 @@ const Signin = () => {
 
   return (
     <div>
+      <Helmet>
+        <title>{t("SignIn")}</title>
+      </Helmet>
       {/* Login Form */}
       <div className="flex flex-col lg:flex-row justify-center lg:justify-center lg:gap-5 lg:mx-24 xl:mx-36 2xl:mx-60 space-y-4 items-center h-screen p-4">
         <div className="flex flex-col justify-center items-center lg:items-start lg:w-[600px]">
@@ -19,7 +23,7 @@ const Signin = () => {
             />
           </div>
           <div className="font-headline text-lg lg:text-2xl font-bold py-4 text-center lg:text-left">
-            {t('LoginMoto')}
+            {t("LoginMoto")}
           </div>
         </div>
         <div>

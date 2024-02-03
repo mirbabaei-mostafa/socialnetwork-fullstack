@@ -6,7 +6,6 @@ const Stories = () => {
   const { t } = useTranslation();
   const { screenSmall, screenMedium } = useScreenSizer();
   const storyCount = screenMedium ? 5 : screenSmall ? 4 : 3;
-  console.log(storyCount);
   return (
     <>
       <div className="flex flex-col my-2 p-2 rounded-md shadow-sm shadow-gray-400 bg-white">
@@ -28,7 +27,10 @@ const Stories = () => {
       <div className="flex flex-row justify-between gap-2 my-2">
         {StoriesData.map((story, index) => {
           return index + 1 <= storyCount ? (
-            <div className="w-[150px] h-[250px] cursor-pointer rounded-md p-0 m-0 relative bg-gradient-to-b from-myorange-dark to-mygreen-dark items-center text-center shadow-sm shadow-gray-400 overflow-hidden">
+            <div
+              key={index}
+              className="w-[150px] h-[250px] cursor-pointer rounded-md p-0 m-0 relative bg-gradient-to-b from-myorange-dark to-mygreen-dark items-center text-center shadow-sm shadow-gray-400 overflow-hidden"
+            >
               <img
                 src={story.image}
                 className="brightness-75 hover:brightness-100 scale-100 hover:scale-110 object-cover h-full"

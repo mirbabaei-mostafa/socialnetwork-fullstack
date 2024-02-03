@@ -11,9 +11,17 @@ export interface userRequest extends Request {
   userId: string;
 }
 
+declare module 'express-serve-static-core' {
+  interface Request {
+    userId: string;
+  }
+}
+
 const JWTVerification = async (
   // because we want to extend req
-  req: Request & userRequest,
+  // req: Request & userRequest,
+  req: Request,
+  // req: Request,
   res: Response,
   next: NextFunction
 ) => {
@@ -28,10 +36,10 @@ const JWTVerification = async (
   try {
     const decoded = jwt.verify(token, process.env.JWT_ACCESS_TOKEN as string);
     req.userId = (decoded as any).id;
-    next();
+    return next();
   } catch (err) {
     res.status(401).json({ error: err, message: 'TokenVerificationFailed' });
-    next();
+    return next();
   }
 };
 
