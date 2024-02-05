@@ -5,6 +5,7 @@ import {
   authUser,
   registerUser,
   renewToken,
+  resendVerification,
   verifyUser,
 } from '../db/controllers/userController';
 import JWTVerification from '../middlewares/jwt';
@@ -19,5 +20,6 @@ userRouter.get('/renew', renewToken);
 // Peotected routes
 userRouter.use(JWTVerification);
 userRouter.post('/activate', verifyUser);
+userRouter.post('/resendverification', resendVerification);
 
 export default userRouter;

@@ -7,7 +7,7 @@ const useRefreshToken = () => {
 
   const refreshToken = async () => {
     try {
-      const response = await axiosPrivate.get('/api/renew');
+      const response = await axiosPrivate.get('/user/renew');
       dispatch(renew(response.data));
       return response.data.accessToken;
     } catch (err) {

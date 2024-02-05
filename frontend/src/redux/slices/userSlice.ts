@@ -1,6 +1,7 @@
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { RootState } from "../store";
-import { axiosPrivate } from "../../utils/axios";
+import axios from "../../utils/axios";
+import useAxiosToken from "../../hooks/useAxiosToken";
 
 // https://blog.logrocket.com/handling-user-authentication-redux-toolkit/
 // https://github.com/bezkoder/redux-toolkit-authentication/
@@ -53,14 +54,18 @@ export const doAuth = createAsyncThunk(
   "user/auth",
   async (authInfo: UserI, { rejectWithValue }) => {
     try {
-      // const response = await axios.post('/user/auth', JSON.stringify(authInfo), {
-      //   headers: { 'Content-Type': 'application/json' },
-      //   withCredentials: true,
-      // });
-      const response = await axiosPrivate.post(
+      const response = await axios.post(
         "/user/auth",
-        JSON.stringify(authInfo)
+        JSON.stringify(authInfo),
+        {
+          headers: { "Content-Type": "application/json" },
+          withCredentials: true,
+        }
       );
+      // const response = await axiosPrivate.post(
+      //   '/user/auth',
+      //   JSON.stringify(authInfo)
+      // );
       return response.data;
       // .then((response) => response.data);
     } catch (err: unknown | any) {
@@ -95,11 +100,8 @@ export const renewToken = createAsyncThunk(
   "user/token",
   async (authInfo: string, { rejectWithValue }) => {
     try {
-      // const response = await axios.get('/user/renew', {
-      //   headers: { 'Content-Type': 'application/json' },
-      //   withCredentials: true,
-      // });
-      const response = await axiosPrivate.get("/user/renew");
+      const response = await axios.get("/user/renew");
+      // const response = await axiosPrivate.get('/user/renew');
       return response.data;
       // .then((response) => response.data);
     } catch (err: unknown | any) {
@@ -121,6 +123,7 @@ export const renewToken = createAsyncThunk(
 export const doVerify = createAsyncThunk(
   "user/activate",
   async (token: string, { rejectWithValue }) => {
+    const axiosPrivate = useAxiosToken();
     try {
       const controller = new AbortController();
       await axiosPrivate

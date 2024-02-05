@@ -70,5 +70,13 @@
   "CreateStory": "Create story",
   "CreateStoryDesc": "Share a photo or write something",
   "ActivationAccount": "Verifing your account!",
-  "AccountVerified": "Your account verified."
+  "AccountVerified": "Your account verified.",
+  "ServerIsNotAccessable": "Server is not accessable!",
+  "FailedResendVerification": "Resend verification E-Mail failed!",
+  "ResendEmailVerificationMessage": "Your account is not verified. Please verify your account befor it gets deleted automatically.",
+  "SendVerification": "Resend verification E-Mail",
+  "FindYourAccount": "Find your account",
+  "EnterEmail": "Please enter your E-Mail address to find your account.",
+  "Find": "Find",
+  "Cancel": "Cancel"
 }

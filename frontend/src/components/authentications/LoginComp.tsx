@@ -1,18 +1,18 @@
-import { useTranslation } from 'react-i18next';
-import { Link } from 'react-router-dom';
-import * as yup from 'yup';
-import { SubmitHandler, useForm } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
-import useScreenSizer from '../../hooks/responsive';
-import { IoIosAlert } from 'react-icons/io';
-import ErrorMsg from './ErrorMsg';
-import { useAppDispatch, useAppSelector } from '../../redux/hooks';
-import SpinnerCircleLoader from '../spinners/SpinnerCircleLoader';
-import SpinnerBarLoader from '../spinners/SpinnerBarLoader';
-import { UserState, doAuth } from '../../redux/slices/userSlice';
-import { RootState } from '../../redux/store';
-import { shallowEqual } from 'react-redux';
-import LoginErrors from '../errors/LoginErrors';
+import { useTranslation } from "react-i18next";
+import { Link } from "react-router-dom";
+import * as yup from "yup";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import useScreenSizer from "../../hooks/responsive";
+import { IoIosAlert } from "react-icons/io";
+import ErrorMsg from "./ErrorMsg";
+import { useAppDispatch, useAppSelector } from "../../redux/hooks";
+import SpinnerCircleLoader from "../spinners/SpinnerCircleLoader";
+import SpinnerBarLoader from "../spinners/SpinnerBarLoader";
+import { UserState, doAuth } from "../../redux/slices/userSlice";
+import { RootState } from "../../redux/store";
+import { shallowEqual } from "react-redux";
+import LoginErrors from "../errors/LoginErrors";
 
 type Props = {
   regFn: React.Dispatch<React.SetStateAction<boolean>>;
@@ -34,8 +34,8 @@ const LoginComp = ({ regFn }: Props) => {
   const dispatch = useAppDispatch();
 
   const yupSchema = yup.object().shape({
-    email: yup.string().required(t('EmailRequired')).email(t('EmailFormat')),
-    password: yup.string().required(t('PasswordRequired')),
+    email: yup.string().required(t("EmailRequired")).email(t("EmailFormat")),
+    password: yup.string().required(t("PasswordRequired")),
   });
   interface UserI extends yup.InferType<typeof yupSchema> {
     email: string;
@@ -65,15 +65,15 @@ const LoginComp = ({ regFn }: Props) => {
               <ErrorMsg
                 message={errors.email?.message as string}
                 arrDir={
-                  screenLarge || screenXLarge || screen2XLarge ? 'left' : 'up'
+                  screenLarge || screenXLarge || screen2XLarge ? "left" : "up"
                 }
               />
             )}
             <div className="w-72 relative">
               <input
-                {...register('email')}
+                {...register("email")}
                 type="text"
-                placeholder={t('Email')}
+                placeholder={t("Email")}
                 className="w-72 py-2 px-4 rounded border border-myorange text-gray-800 font-roboto text-md"
               />
               {errors.email && (
@@ -88,9 +88,9 @@ const LoginComp = ({ regFn }: Props) => {
           <div className="w-72 relative pb-4">
             <div className="w-72">
               <input
-                {...register('password')}
+                {...register("password")}
                 type="password"
-                placeholder={t('Password')}
+                placeholder={t("Password")}
                 className="w-72 py-2 px-4 rounded border border-mygreen"
               />
               {errors.email && (
@@ -105,7 +105,7 @@ const LoginComp = ({ regFn }: Props) => {
               <ErrorMsg
                 message={errors.password?.message as string}
                 arrDir={
-                  screenLarge || screenXLarge || screen2XLarge ? 'left' : 'down'
+                  screenLarge || screenXLarge || screen2XLarge ? "left" : "down"
                 }
               />
             )}
@@ -116,13 +116,13 @@ const LoginComp = ({ regFn }: Props) => {
                 type="submit"
                 disabled={
                   !(
-                    getFieldState('email').isDirty &&
-                    getFieldState('password').isDirty
+                    getFieldState("email").isDirty &&
+                    getFieldState("password").isDirty
                   )
                 }
                 className="w-full py-2 px-4 rounded border border-mycyan-dark disabled:border-gray-600 bg-mycyan hover:bg-mycyan-dark transition-colors disabled:bg-gray-400 text-white font-bold font-roboto text-md disabled:cursor-not-allowed cursor-pointer"
               >
-                {t('Login')}
+                {t("Login")}
               </button>
             ) : (
               <SpinnerCircleLoader isLoading={userState.isLoading} size={30} />
@@ -135,10 +135,10 @@ const LoginComp = ({ regFn }: Props) => {
           )}
           <div className="w-full pb-5">
             <Link
-              to={'/api/forgot'}
+              to={"/forgot"}
               className="block w-full text-md font-roboto text-mycyan-dark hover:text-myorange-dark text-center "
             >
-              {t('ForgotPassword')}
+              {t("ForgotPassword")}
             </Link>
           </div>
         </form>
@@ -147,7 +147,7 @@ const LoginComp = ({ regFn }: Props) => {
             onClick={() => regFn(true)}
             className="w-full py-2 px-4 rounded border border-mygreen-dark bg-mygreen hover:bg-mygreen-dark transition-colors text-white font-bold font-roboto text-md"
           >
-            {t('CreateAccount')}
+            {t("CreateAccount")}
           </button>
         </div>
       </div>

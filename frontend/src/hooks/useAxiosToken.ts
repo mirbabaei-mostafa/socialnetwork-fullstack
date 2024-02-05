@@ -1,11 +1,11 @@
-import React, { useEffect } from "react";
-import useRefreshToken from "./useRefreshToken";
-import { axiosPrivate } from "../utils/axios";
-import { UserState, renewToken } from "../redux/slices/userSlice";
-import { RootState } from "../redux/store";
-import { useAppDispatch, useAppSelector } from "../redux/hooks";
-import { shallowEqual } from "react-redux";
-import { InternalAxiosRequestConfig } from "axios";
+import { useEffect } from 'react';
+import useRefreshToken from './useRefreshToken';
+import { axiosPrivate } from '../utils/axios';
+import { UserState } from '../redux/slices/userSlice';
+import { RootState } from '../redux/store';
+import { useAppDispatch, useAppSelector } from '../redux/hooks';
+import { shallowEqual } from 'react-redux';
+import { InternalAxiosRequestConfig } from 'axios';
 
 const useAxiosToken = () => {
   const refreshToken = useRefreshToken();
@@ -17,9 +17,9 @@ const useAxiosToken = () => {
   useEffect(() => {
     const requstInterceptor = axiosPrivate.interceptors.request.use(
       (config: InternalAxiosRequestConfig<any>) => {
-        if (!config.headers["Authorization"]) {
+        if (!config.headers['Authorization']) {
           config.headers[
-            "Authorization"
+            'Authorization'
           ] = `Bearer ${userState.userInfo.accessToken}`;
         }
         return config;
@@ -36,7 +36,7 @@ const useAxiosToken = () => {
         if (err?.response?.status === 403 && !preReq?.sent) {
           preReq.sent = true;
           const newAccessToken = await refreshToken();
-          preReq.headers["Authorization"] = `Bearer ${newAccessToken}`;
+          preReq.headers['Authorization'] = `Bearer ${newAccessToken}`;
           return axiosPrivate(preReq);
         }
         return Promise.reject(err);

@@ -29,10 +29,11 @@ const JWTVerification = async (
     req.headers.authorization || req.headers.Authorization;
 
   // Control token is not empty
-  !authenticationToken?.starsWith('Beare ') &&
-    res.status(401).json({ message: 'TokenNotFound' });
+  if (!authenticationToken?.toString().startsWith('Bearer ')) {
+    return res.status(401).json({ message: 'TokenNotFound' });
+  }
 
-  const token: string = authenticationToken?.split(' ')[1];
+  const token: string = authenticationToken?.toString().split(' ')[1];
   try {
     const decoded = jwt.verify(token, process.env.JWT_ACCESS_TOKEN as string);
     req.userId = (decoded as any).id;
