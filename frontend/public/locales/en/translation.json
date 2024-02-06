@@ -78,5 +78,6 @@
   "FindYourAccount": "Find your account",
   "EnterEmail": "Please enter your E-Mail address to find your account.",
   "Find": "Find",
-  "Cancel": "Cancel"
+  "Cancel": "Cancel",
+  "EmailDoseNotExist": "E-Mail dose not exist!"
 }

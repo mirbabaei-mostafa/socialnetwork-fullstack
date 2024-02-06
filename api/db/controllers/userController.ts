@@ -334,3 +334,33 @@ const tokenCreator = (id: string): string[] => {
   );
   return [accessToken, refreshToken];
 };
+
+export const findAccountByEmail = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const validateRes: Result<ValidationError> = validationResult(req);
+  if (!validateRes.isEmpty()) {
+    // Request in snot valid
+    return res.status(400).json({ error: validateRes.array() });
+  } else {
+    try {
+      // Find when the email address exist
+      const foundUser = await userModel.findOne<UserSchema | undefined>({
+        email: req.body.email,
+      });
+      // Email address dose not exit
+      if (!foundUser) {
+        return res.status(401).json({ error: 'EmailDoseNotExist' });
+      }
+      // send authenticated user information to client
+      return res.json({
+        email: foundUser.email,
+        image: foundUser.image,
+      });
+    } catch (err) {
+      next(err);
+    }
+  }
+};
