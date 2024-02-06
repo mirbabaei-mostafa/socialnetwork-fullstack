@@ -79,5 +79,10 @@
   "EnterEmail": "Please enter your E-Mail address to find your account.",
   "Find": "Find",
   "Cancel": "Cancel",
-  "EmailDoseNotExist": "E-Mail dose not exist!"
+  "EmailDoseNotExist": "E-Mail dose not exist!",
+  "ResetPassword": "Reset your password",
+  "HowToRecieveCode": "How you want to receive the code to reset your password?",
+  "CodeByEmail": "Send code via",
+  "ItIsNotMe": "It's not me!",
+  "Continue": "Continue"
 }
