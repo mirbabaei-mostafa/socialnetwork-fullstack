@@ -215,6 +215,38 @@ export const authUser = async (
   }
 };
 
+export const signOut = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  if (!req.cookies?.auth_token) return res.sendStatus(204);
+  const oldToken: any = req.cookies?.auth_token;
+
+  const foundUser: UserSchema | null = await userModel.findOne({
+    refresh_token: oldToken,
+  });
+
+  // Remove current access cookie
+  res.clearCookie('auth_token', {
+    httpOnly: true,
+    secure: true,
+    sameSite: 'none',
+  });
+
+  if (!foundUser) {
+    return res.sendStatus(204);
+  }
+
+  // Remove old refresh token from refresh token array
+  foundUser.refresh_token = foundUser.refresh_token.filter(
+    (rToken) => rToken !== oldToken
+  );
+  // await foundUser.updateOne();
+  await foundUser.save();
+  return res.sendStatus(204);
+};
+
 // Renew user refresh token
 // Token with evry Request send to server
 // cookieParser get the cookie and store it in

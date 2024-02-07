@@ -1,14 +1,14 @@
-import { useAppDispatch, useAppSelector } from "../../redux/hooks";
-import { RootState } from "../../redux/store";
-import { UserState, signout } from "../../redux/slices/userSlice";
-import { shallowEqual } from "react-redux";
-import { Link, useNavigate } from "react-router-dom";
-import { useTranslation } from "react-i18next";
-import { MutableRefObject, useRef, useState } from "react";
-import useClickOutside from "../../hooks/useClickOutside";
-import ProfileSetting from "./ProfileSetting";
-import ProfileHelp from "./ProfileHelp";
-import ProfileDisplay from "./ProfileDisplay";
+import { useAppDispatch, useAppSelector } from '../../redux/hooks';
+import { RootState } from '../../redux/store';
+import { UserState, signout } from '../../redux/slices/userSlice';
+import { shallowEqual } from 'react-redux';
+import { Link, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+import { MutableRefObject, useRef, useState } from 'react';
+import useClickOutside from '../../hooks/useClickOutside';
+import ProfileSetting from './ProfileSetting';
+import ProfileHelp from './ProfileHelp';
+import ProfileDisplay from './ProfileDisplay';
 
 const ProfileMenu = () => {
   const { t } = useTranslation();
@@ -26,7 +26,6 @@ const ProfileMenu = () => {
 
   const signOut = () => {
     dispatch(signout());
-    console.log(userState);
     // navigate("/login");
   };
 
@@ -48,7 +47,7 @@ const ProfileMenu = () => {
                   className=" w-[32px] h-[32px] rounded-full border-gray-400 border-[1px]"
                 />
                 <span className="font-headline font-bold text-gray-600 text-[16px]">
-                  {userState.userInfo.fname + " " + userState.userInfo.lname}
+                  {userState.userInfo.fname + ' ' + userState.userInfo.lname}
                 </span>
               </div>
               <div className="w-[330px] py-2  border-t-gray-400 border-t-[1px]">
@@ -56,7 +55,7 @@ const ProfileMenu = () => {
                   to="/profile/my"
                   className="text-mycyan-dark hover:text-mycyan font-roboto font-normal text-[12px] cursor-pointer"
                 >
-                  {t("SeeAllProfiles")}
+                  {t('SeeAllProfiles')}
                 </Link>
               </div>
             </div>
@@ -69,7 +68,7 @@ const ProfileMenu = () => {
                   <img src="./images/menu/setting.png" />
                 </div>
                 <div className="font-roboto font-bold text-[15px] text-gray-600">
-                  {t("SettingAndPrivacy")}
+                  {t('SettingAndPrivacy')}
                 </div>
               </div>
               <div>
@@ -85,7 +84,7 @@ const ProfileMenu = () => {
                   <img src="./images/menu/support.png" />
                 </div>
                 <div className="font-roboto font-bold text-[15px] text-gray-600">
-                  {t("HelpAndSupport")}
+                  {t('HelpAndSupport')}
                 </div>
               </div>
               <div>
@@ -101,7 +100,7 @@ const ProfileMenu = () => {
                   <img src="./images/menu/display.png" />
                 </div>
                 <div className="font-roboto font-bold text-[15px] text-gray-600">
-                  {t("DisplayAndAccessibility")}
+                  {t('DisplayAndAccessibility')}
                 </div>
               </div>
               <div>
@@ -110,13 +109,13 @@ const ProfileMenu = () => {
             </div>
             <div
               className="flex flex-row justify-start gap-2 items-center p-2 rounded-md hover:bg-gray-200 cursor-pointer"
-              onClick={() => navigate("/profile/feedback")}
+              onClick={() => navigate('/profile/feedback')}
             >
               <div className="rounded-full bg-gray-300 p-2">
                 <img src="./images/menu/feedback.png" />
               </div>
               <div className="font-roboto font-bold text-[15px] text-gray-600">
-                {t("GiveFeedback")}
+                {t('GiveFeedback')}
               </div>
             </div>
             <div
@@ -127,7 +126,7 @@ const ProfileMenu = () => {
                 <img src="./images/menu/logout.png" />
               </div>
               <div className="font-roboto font-bold text-[15px] text-gray-600">
-                {t("LogOut")}
+                {t('LogOut')}
               </div>
             </div>
           </div>

@@ -8,6 +8,7 @@ import {
   registerUser,
   renewToken,
   resendVerification,
+  signOut,
   verifyUser,
 } from '../db/controllers/userController';
 import JWTVerification from '../middlewares/jwt';
@@ -17,6 +18,7 @@ const userRouter: Router = express.Router();
 // Public routes
 userRouter.post('/register', registerValidator, registerUser);
 userRouter.post('/auth', authValidator, authUser);
+userRouter.get('/signout', signOut);
 userRouter.get('/renew', renewToken);
 userRouter.post('/finduser', findUserValidator, findAccountByEmail);
 
