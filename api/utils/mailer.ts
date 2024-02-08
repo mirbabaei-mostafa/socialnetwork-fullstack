@@ -1,6 +1,6 @@
-import dotenv from 'dotenv';
-import { google } from 'googleapis';
-import nodemailer from 'nodemailer';
+import dotenv from "dotenv";
+import { google } from "googleapis";
+import nodemailer from "nodemailer";
 
 dotenv.config();
 
@@ -24,7 +24,7 @@ const sendVerification = (email: string, name: string, url: string) => {
       port: Number(process.env.GOOGLE_SMTP_PORT),
       secure: true,
       auth: {
-        type: 'OAUTH2',
+        type: "OAUTH2",
         user: process.env.MAILADDRESS,
         clientId: process.env.GOOGLE_APIS_CLIENTID,
         clientSecret: process.env.GOOGLE_APIS_CLIENT_SECRET,
@@ -37,7 +37,51 @@ const sendVerification = (email: string, name: string, url: string) => {
     const message = {
       from: process.env.MAILADDRESS,
       to: email,
-      subject: 'Social Network Verification',
+      subject: "Social Network Verification",
+      html: `<div style="max-width:600px;margin:20px;padding:15px;border:1px solid #d9caa3;border-radius:5px;display:flex;gap:20px;flex-direction:column;justify-content:center"><div style="font:bold 24px Arial;padding:8px">Activate you Social Network account</div><div style="font:bold 14px Arial;padding:4px">Hello ${name},</div><div style="font:normal 13px Arial;padding:4px;line-height:28px">You recently created an account on our Social Network website. Please verify your email to complete your registration by click at below link:</div><div style="font:bold 16px Arial;padding:7px"><a href="${url}">Confirm your account</a></div></div>`,
+    };
+
+    // https://nodemailer.com/usage/
+    smtp.sendMail(message, (err: Error | null, res) => {
+      if (err) {
+        return err;
+      } else {
+        return res;
+      }
+    });
+  } catch (err) {
+    console.log(err);
+    return err;
+  }
+};
+
+// Send reset password code by email
+export const sendResetPasswordCodeByEmail = (
+  email: string,
+  name: string,
+  code: string
+) => {
+  try {
+    const accessToken = oauth2Client.getAccessToken();
+    const smtp = nodemailer.createTransport({
+      host: String(process.env.GOOGLE_SMTP_HOST),
+      port: Number(process.env.GOOGLE_SMTP_PORT),
+      secure: true,
+      auth: {
+        type: "OAUTH2",
+        user: process.env.MAILADDRESS,
+        clientId: process.env.GOOGLE_APIS_CLIENTID,
+        clientSecret: process.env.GOOGLE_APIS_CLIENT_SECRET,
+        accessToken,
+        refreshToken: process.env.GOOGLE_APIS_MAIL_REFERESH_TOKEN,
+        // expires: 1484314697598,
+      },
+    } as nodemailer.TransportOptions);
+
+    const message = {
+      from: process.env.MAILADDRESS,
+      to: email,
+      subject: "Social Network Verification",
       html: `<div style="max-width:600px;margin:20px;padding:15px;border:1px solid #d9caa3;border-radius:5px;display:flex;gap:20px;flex-direction:column;justify-content:center"><div style="font:bold 24px Arial;padding:8px">Activate you Social Network account</div><div style="font:bold 14px Arial;padding:4px">Hello ${name},</div><div style="font:normal 13px Arial;padding:4px;line-height:28px">You recently created an account on our Social Network website. Please verify your email to complete your registration by click at below link:</div><div style="font:bold 16px Arial;padding:7px"><a href="${url}">Confirm your account</a></div></div>`,
     };
 

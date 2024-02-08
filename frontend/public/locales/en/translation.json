@@ -84,5 +84,6 @@
   "HowToRecieveCode": "How you want to receive the code to reset your password?",
   "CodeByEmail": "Send code via",
   "ItIsNotMe": "It's not me!",
-  "Continue": "Continue"
+  "Continue": "Continue",
+  "InvalidEmail": "Invalid E-Mail address!"
 }

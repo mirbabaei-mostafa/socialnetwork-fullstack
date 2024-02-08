@@ -1,5 +1,8 @@
 import { NextFunction, Request, Response } from "express";
 import userModel, { UserSchema } from "../models/userModel";
+import resetPasswordModel, {
+  ResetPasswordSchema,
+} from "../models/resetPasswordModel";
 import {
   Result,
   ValidationError,
@@ -8,7 +11,10 @@ import {
 } from "express-validator";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import dotenv from "dotenv";
-import sendVerification from "../../utils/mailer";
+import sendVerification, {
+  sendResetPasswordCodeByEmail,
+} from "../../utils/mailer";
+import randomstring from "randomstring";
 
 dotenv.config();
 
@@ -389,5 +395,54 @@ export const findAccountByEmail = async (
     } catch (err) {
       next(err);
     }
+  }
+};
+
+// Send reset password code to user email address
+export const sendResetPasswordCode = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  if (!req.body.email) {
+    return res.status(401).json({ error: "InvalidEmail" });
+  }
+  try {
+    // Find when the email address exist
+    const foundUser = await userModel.findOne<UserSchema | undefined>({
+      email: req.body.email,
+    });
+    // Email address dose not exit
+    if (!foundUser) {
+      return res.status(401).json({ error: "EmailDoseNotExist" });
+    }
+
+    // Remove old reset password code from codes model
+    await resetPasswordModel.findOneAndDelete({ user: foundUser._id });
+
+    // create new code
+    const code = randomstring.generate({
+      length: 6,
+      charset: "alphabetic",
+    });
+
+    // create new code record in db
+    const newCode = await new resetPasswordModel({
+      code: code,
+      user: foundUser._id,
+    });
+
+    await newCode.save();
+
+    // send code by email
+    sendResetPasswordCodeByEmail(foundUser.email, foundUser.fname, code);
+
+    // send authenticated user information to client
+    return res.json({
+      email: foundUser.email,
+      image: foundUser.image,
+    });
+  } catch (err) {
+    next(err);
   }
 };
