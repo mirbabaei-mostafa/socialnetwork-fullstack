@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Page Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" type="text/css" media="screen" href="main.css" />
+    <script src="main.js"></script>
+  </head>
+  <body>
+    <div
+      style="
+        max-width: 600px;
+        margin: 20px;
+        padding: 15px;
+        border: 1px solid #d9caa3;
+        border-radius: 5px;
+        display: flex;
+        gap: 20px;
+        flex-direction: column;
+        justify-content: center;
+      "
+    >
+      <div style="font: bold 24px Arial; padding: 8px">
+        Activate your Social Network account
+      </div>
+      <div style="font: bold 14px Arial; padding: 4px">Hello ${name},</div>
+      <div style="font: normal 13px Arial; padding: 4px; line-height: 28px">
+        You recently created an account on our Social Network website. Please
+        verify your email to complete your registration by click at below link:
+      </div>
+      <div style="font: bold 16px Arial; padding: 7px">
+        <a href="${url}">Confirm your account</a>
+      </div>
+    </div>
+  </body>
+</html>

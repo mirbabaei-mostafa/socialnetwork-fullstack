@@ -1,14 +1,20 @@
-import React from 'react';
+import { useState } from 'react';
+import { ForgotProps } from '../../utils/type';
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
-import { ForgotInfo, sendResetCode } from '../../redux/slices/forgotSlice';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
+import {
+  ForgotInfo,
+  cancelResetCode,
+  verifyResetCode,
+} from '../../redux/slices/forgotSlice';
 import { RootState } from '../../redux/store';
 import { shallowEqual } from 'react-redux';
-import { ForgotProps } from '../../utils/type';
+import ReactInputVerificationCode from 'react-input-verification-code';
+import { useNavigate } from 'react-router-dom';
 
-const FindSendCode = (props: ForgotProps) => {
+const GetResetCode = (props: ForgotProps) => {
   const { t } = useTranslation();
+  const [resetCode, setResetCode] = useState<string>('');
   const navigate = useNavigate();
   const forgotState: ForgotInfo = useAppSelector(
     (state: RootState): ForgotInfo => {
@@ -18,38 +24,33 @@ const FindSendCode = (props: ForgotProps) => {
   );
   const dispatch = useAppDispatch();
 
-  const handelSubmit = () => {
-    dispatch(sendResetCode({ email: forgotState.email }));
-    if (!forgotState.error) {
-      props.stateFN(2);
+  const onSubmitHandel = () => {
+    dispatch(verifyResetCode({ email: forgotState.email, code: resetCode }));
+    if (forgotState.success) {
+      props.stateFN(3);
     }
+  };
+
+  const cancelReset = () => {
+    dispatch(cancelResetCode({ email: forgotState.email }));
+    navigate('/login');
   };
 
   return (
     <>
-      <div className="flex flex-row justify-start gap-3 items-center w-[510px] py-3">
-        <div className="">
-          <img src={forgotState.image} className="w-8 rounded-full" />
-        </div>
-        <div className="flex flex-col items-start">
-          <span className="font-bold font-headline text-gray-700 text-[14px]">
-            {forgotState.email}
-          </span>
-        </div>
-      </div>
       <div className="w-[510px] text-left pt-7 pb-3 font-roboto font-normal text-gray-800 text-[14px]">
         {t('HowToRecieveCode')}
       </div>
-      <div className="w-[510px] text-left items-center">
-        <label className="font-roboto font-normal text-gray-800 text-[13px]">
-          <input
-            type="radio"
-            name="codetype"
-            value="byemail"
-            className="focus:ring-0 border-2 ml-2"
-          />{' '}
-          {t('CodeByEmail') + " '" + forgotState.email + "'"}
-        </label>
+      <div className="custom-styles">
+        <ReactInputVerificationCode
+          autoFocus
+          placeholder=""
+          value={resetCode}
+          onChange={setResetCode}
+          onCompleted={onSubmitHandel}
+          length={6}
+          type="text"
+        />
       </div>
       {forgotState.error && (
         <div className="font-roboto font-bold text-[13px] text-red-700">
@@ -58,21 +59,21 @@ const FindSendCode = (props: ForgotProps) => {
       )}
       <div className="w-[510px] flex flex-row justify-around gap-5 pt-9 pb-4">
         <button
-          onClick={handelSubmit}
+          onClick={onSubmitHandel}
           type="submit"
           className="py-2 px-4 rounded border border-mycyan-dark disabled:border-gray-600 bg-mycyan hover:bg-mycyan-dark transition-colors disabled:bg-gray-400 text-white font-bold font-roboto text-md disabled:cursor-not-allowed cursor-pointer"
         >
           {t('Continue')}
         </button>
         <button
-          onClick={() => navigate('/login')}
+          onClick={cancelReset}
           className="py-2 px-4 rounded border border-myorange-dark disabled:border-gray-600 bg-myorange hover:bg-myorange-dark transition-colors disabled:bg-gray-400 text-white font-bold font-roboto text-md disabled:cursor-not-allowed cursor-pointer"
         >
-          {t('ItIsNotMe')}
+          {t('Cancel')}
         </button>
       </div>
     </>
   );
 };
 
-export default FindSendCode;
+export default GetResetCode;

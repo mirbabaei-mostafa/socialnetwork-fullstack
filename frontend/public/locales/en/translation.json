@@ -85,5 +85,6 @@
   "CodeByEmail": "Send code via",
   "ItIsNotMe": "It's not me!",
   "Continue": "Continue",
-  "InvalidEmail": "Invalid E-Mail address!"
+  "InvalidEmail": "Invalid E-Mail address!",
+  "EnterNewPassword": "New password"
 }

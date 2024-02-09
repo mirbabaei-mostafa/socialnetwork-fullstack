@@ -1,9 +1,13 @@
-import axios from "../../utils/axios";
-import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { RootState } from "../store";
+import axios from '../../utils/axios';
+import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { RootState } from '../store';
 
 export interface EmailI {
   email: string;
+}
+export interface EmailCode {
+  email: string;
+  code: string;
 }
 export interface ForgotInfo {
   email: string;
@@ -14,23 +18,23 @@ export interface ForgotInfo {
 }
 
 const initialState: ForgotInfo = {
-  email: "",
-  image: "",
+  email: '',
+  image: '',
   isLoading: false,
   success: false,
-  error: "",
+  error: '',
 };
 
 // Find user by email address
 export const findUserByEmail = createAsyncThunk(
-  "user/forgot",
+  'user/forgot',
   async (data: EmailI, { rejectWithValue }) => {
     try {
       const response = await axios.post(
-        "/user/finduser",
+        '/user/finduser',
         JSON.stringify({ email: data.email }),
         {
-          headers: { "Content-Type": "application/json" },
+          headers: { 'Content-Type': 'application/json' },
           withCredentials: true,
         }
       );
@@ -42,31 +46,133 @@ export const findUserByEmail = createAsyncThunk(
       // .then((response) => response.data);
     } catch (err: unknown | any) {
       if (!err?.response) {
-        return rejectWithValue("ServerIsNotAccessable");
+        return rejectWithValue('ServerIsNotAccessable');
       } else if (err?.response?.status === 401) {
         return rejectWithValue(
           err?.response?.data.error
             ? err?.response?.data.error
-            : "EmailDoseNotExist"
+            : 'EmailDoseNotExist'
         );
       } else if (err instanceof Error) {
         return rejectWithValue(err.message);
       } else {
-        return rejectWithValue("GeneralError");
+        return rejectWithValue('GeneralError');
+      }
+    }
+  }
+);
+
+// Find user by email address
+export const sendResetCode = createAsyncThunk(
+  'user/forgotcode',
+  async (data: EmailI, { rejectWithValue }) => {
+    try {
+      const response = await axios.post(
+        '/user/sendresetcode',
+        JSON.stringify({ email: data.email }),
+        {
+          headers: { 'Content-Type': 'application/json' },
+          withCredentials: true,
+        }
+      );
+      return response.data;
+    } catch (err: unknown | any) {
+      if (!err?.response) {
+        return rejectWithValue('ServerIsNotAccessable');
+      } else if (err?.response?.status === 401) {
+        return rejectWithValue(
+          err?.response?.data.error
+            ? err?.response?.data.error
+            : 'EmailDoseNotExist'
+        );
+      } else if (err instanceof Error) {
+        return rejectWithValue(err.message);
+      } else {
+        return rejectWithValue('GeneralError');
+      }
+    }
+  }
+);
+
+// Cancel password reset - Code must be delete
+export const verifyResetCode = createAsyncThunk(
+  'user/forgotcodeverify',
+  async (data: EmailCode, { rejectWithValue }) => {
+    try {
+      const response = await axios.post(
+        '/user/verifyresetcode',
+        JSON.stringify({ email: data.email, code: data.code }),
+        {
+          headers: { 'Content-Type': 'application/json' },
+          withCredentials: true,
+        }
+      );
+      return response.data;
+    } catch (err: unknown | any) {
+      if (!err?.response) {
+        return rejectWithValue('ServerIsNotAccessable');
+      } else if (err?.response?.status === 400) {
+        return rejectWithValue(
+          err?.response?.data.error
+            ? err?.response?.data.error
+            : 'CodeIsNotMatch'
+        );
+      } else if (err?.response?.status === 401) {
+        return rejectWithValue(
+          err?.response?.data.error
+            ? err?.response?.data.error
+            : 'EmailDoseNotExist'
+        );
+      } else if (err instanceof Error) {
+        return rejectWithValue(err.message);
+      } else {
+        return rejectWithValue('GeneralError');
+      }
+    }
+  }
+);
+
+// Cancel password reset - Code must be delete
+export const cancelResetCode = createAsyncThunk(
+  'user/forgotcodecancel',
+  async (data: EmailI, { rejectWithValue }) => {
+    try {
+      const response = await axios.post(
+        '/user/cancelresetcode',
+        JSON.stringify({ email: data.email }),
+        {
+          headers: { 'Content-Type': 'application/json' },
+          withCredentials: true,
+        }
+      );
+      return response.data;
+    } catch (err: unknown | any) {
+      if (!err?.response) {
+        return rejectWithValue('ServerIsNotAccessable');
+      } else if (err?.response?.status === 401) {
+        return rejectWithValue(
+          err?.response?.data.error
+            ? err?.response?.data.error
+            : 'EmailDoseNotExist'
+        );
+      } else if (err instanceof Error) {
+        return rejectWithValue(err.message);
+      } else {
+        return rejectWithValue('GeneralError');
       }
     }
   }
 );
 
 export const forgotSlice = createSlice({
-  name: "forgot",
+  name: 'forgot',
   initialState,
   reducers: {},
   extraReducers: (builder) => {
     builder.addCase(findUserByEmail.pending, (state) => {
       state.isLoading = true;
       state.success = false;
-      state.error = "";
+      state.error = '';
       // return {
       //   ...state,
       //   isLoading: true,
@@ -81,7 +187,7 @@ export const forgotSlice = createSlice({
         state.image = action.payload?.image;
         state.isLoading = false;
         state.success = true;
-        state.error = "";
+        state.error = '';
         // return {
         //   ...state,
         //   email: action.payload?.email,
@@ -93,8 +199,8 @@ export const forgotSlice = createSlice({
       }
     );
     builder.addCase(findUserByEmail.rejected, (state, action) => {
-      state.email = "";
-      state.image = "";
+      state.email = '';
+      state.image = '';
       state.isLoading = false;
       state.success = false;
       state.error =
@@ -107,6 +213,72 @@ export const forgotSlice = createSlice({
       //   success: false,
       //   error: (action.payload as string) || (action.error.message as string),
       // };
+    });
+
+    // Send reset code for changeing passworf by email
+    builder.addCase(sendResetCode.pending, (state) => {
+      state.isLoading = true;
+      state.success = false;
+      state.error = '';
+    });
+    builder.addCase(sendResetCode.fulfilled, (state) => {
+      // state.email = action.payload?.email;
+      // state.image = action.payload?.image;
+      state.isLoading = false;
+      state.success = true;
+      state.error = '';
+    });
+    builder.addCase(sendResetCode.rejected, (state, action) => {
+      // state.email = '';
+      // state.image = '';
+      state.isLoading = false;
+      state.success = false;
+      state.error =
+        (action.payload as string) || (action.error.message as string);
+    });
+
+    // Check if the code by user entered is match with the code in DB
+    builder.addCase(verifyResetCode.pending, (state) => {
+      state.isLoading = true;
+      state.success = false;
+      state.error = '';
+    });
+    builder.addCase(verifyResetCode.fulfilled, (state) => {
+      // state.email = action.payload?.email;
+      // state.image = action.payload?.image;
+      state.isLoading = false;
+      state.success = true;
+      state.error = '';
+    });
+    builder.addCase(verifyResetCode.rejected, (state, action) => {
+      // state.email = '';
+      // state.image = '';
+      state.isLoading = false;
+      state.success = false;
+      state.error =
+        (action.payload as string) || (action.error.message as string);
+    });
+
+    // Check if the code by user entered is match with the code in DB
+    builder.addCase(cancelResetCode.pending, (state) => {
+      state.isLoading = true;
+      state.success = false;
+      state.error = '';
+    });
+    builder.addCase(cancelResetCode.fulfilled, (state) => {
+      state.email = '';
+      state.image = '';
+      state.isLoading = false;
+      state.success = true;
+      state.error = '';
+    });
+    builder.addCase(cancelResetCode.rejected, (state, action) => {
+      state.email = '';
+      state.image = '';
+      state.isLoading = false;
+      state.success = false;
+      state.error =
+        (action.payload as string) || (action.error.message as string);
     });
   },
 });

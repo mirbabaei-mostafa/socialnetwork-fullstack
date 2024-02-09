@@ -1,20 +1,20 @@
-import { NextFunction, Request, Response } from "express";
-import userModel, { UserSchema } from "../models/userModel";
+import { NextFunction, Request, Response } from 'express';
+import userModel, { UserSchema } from '../models/userModel';
 import resetPasswordModel, {
   ResetPasswordSchema,
-} from "../models/resetPasswordModel";
+} from '../models/resetPasswordModel';
 import {
   Result,
   ValidationError,
   cookie,
   validationResult,
-} from "express-validator";
-import jwt, { JwtPayload } from "jsonwebtoken";
-import dotenv from "dotenv";
+} from 'express-validator';
+import jwt, { JwtPayload } from 'jsonwebtoken';
+import dotenv from 'dotenv';
 import sendVerification, {
   sendResetPasswordCodeByEmail,
-} from "../../utils/mailer";
-import randomstring from "randomstring";
+} from '../../utils/mailer';
+import randomstring from 'randomstring';
 
 dotenv.config();
 
@@ -43,13 +43,13 @@ export const registerUser = async (
       const mailToken = jwt.sign(
         { id: newUser.id.toString() },
         process.env.JWT_TOKEN as string,
-        { expiresIn: "30m" }
+        { expiresIn: '30m' }
       );
-      const url: string = process.env.BASEURL + "/activate/" + mailToken;
+      const url: string = process.env.BASEURL + '/activate/' + mailToken;
       sendVerification(newUser.email, newUser.username, url);
 
       // Successfull create new user
-      return res.status(201).json({ message: "SuccessRegisterUser" });
+      return res.status(201).json({ message: 'SuccessRegisterUser' });
     } catch (err) {
       // Registring new user faced an error and return Error
       // res.status(500).json({ error: validateRes.array() });
@@ -67,29 +67,29 @@ export const verifyUser = async (
   const { token } = req.body;
 
   // To control if the token exist
-  if (!token) return res.status(401).json({ message: "TokenNotValidated" });
+  if (!token) return res.status(401).json({ message: 'TokenNotValidated' });
 
   try {
     // Compare recieved token with secret key
     const userId = jwt.verify(token, process.env.JWT_TOKEN as string);
     if (!userId)
-      return res.status(401).json({ message: "TokenNotVerifiedOrExpired" });
+      return res.status(401).json({ message: 'TokenNotVerifiedOrExpired' });
 
     const foundUser = await userModel.findById((userId as any).id);
     if (!foundUser)
-      return res.status(401).json({ message: "TokenNotAssignToUser" });
+      return res.status(401).json({ message: 'TokenNotAssignToUser' });
 
     // to prevent access when user try to access with another access token
     if (foundUser.id !== req.userId)
-      return res.status(403).json({ message: "TokenNotValidated" });
+      return res.status(403).json({ message: 'TokenNotValidated' });
 
     if (foundUser!.verify) {
-      return res.status(200).json({ message: "UserWasAlreadyVerified" });
+      return res.status(200).json({ message: 'UserWasAlreadyVerified' });
     } else {
       // foundUser!.verify = true;
       // await foundUser?.save();
       await userModel.findByIdAndUpdate((userId as any).id, { verify: true });
-      return res.status(200).json({ message: "UserActivated" });
+      return res.status(200).json({ message: 'UserActivated' });
     }
   } catch (err) {
     return res.status(401).json({ message: err });
@@ -106,24 +106,24 @@ export const resendVerification = async (
     try {
       const foundUser = await userModel.findById(req.userId);
       if (!foundUser) {
-        return res.status(401).json({ message: "UserNotFound" });
+        return res.status(401).json({ message: 'UserNotFound' });
       }
 
       if (foundUser.verify === true) {
-        return res.status(400).json({ message: "UserVerified" });
+        return res.status(400).json({ message: 'UserVerified' });
       }
 
       // Send verification email
       const mailToken = jwt.sign(
         { id: foundUser.id.toString() },
         process.env.JWT_TOKEN as string,
-        { expiresIn: "30m" }
+        { expiresIn: '30m' }
       );
-      const url: string = process.env.BASEURL + "/activate/" + mailToken;
+      const url: string = process.env.BASEURL + '/activate/' + mailToken;
       sendVerification(foundUser.email, foundUser.username, url);
 
       // Successfull create new user
-      return res.status(201).json({ message: "VerificationEmailsended" });
+      return res.status(201).json({ message: 'VerificationEmailsended' });
     } catch (err) {
       return next(err);
     }
@@ -149,12 +149,12 @@ export const authUser = async (
       });
       // Email address dose not exit
       if (!foundUser) {
-        return res.status(401).json({ error: "EmailDoseNotExist" });
+        return res.status(401).json({ error: 'EmailDoseNotExist' });
       }
       // Password entered wrong
       const compareRes = await foundUser.comparePassword(req.body.password);
       if (!compareRes) {
-        return res.status(401).json({ error: "PasswordIsWrong" });
+        return res.status(401).json({ error: 'PasswordIsWrong' });
       }
 
       // Create access and refresh tokens
@@ -175,10 +175,10 @@ export const authUser = async (
         });
         if (!foundToken) refreshTokenArray = [];
 
-        res.clearCookie("auth_token", {
+        res.clearCookie('auth_token', {
           httpOnly: true,
           secure: true,
-          sameSite: "none",
+          sameSite: 'none',
         });
       }
 
@@ -187,10 +187,10 @@ export const authUser = async (
       await foundUser.save();
 
       // send new refresh token as cookie to client
-      res.cookie("auth_token", refreshToken, {
+      res.cookie('auth_token', refreshToken, {
         httpOnly: true,
         secure: true,
-        sameSite: "none",
+        sameSite: 'none',
         maxAge:
           parseInt(process.env.COOKIE_CLIENT_MAXAGE as string) *
           1000 *
@@ -229,10 +229,10 @@ export const signOut = async (
   });
 
   // Remove current access cookie
-  res.clearCookie("auth_token", {
+  res.clearCookie('auth_token', {
     httpOnly: true,
     secure: true,
-    sameSite: "none",
+    sameSite: 'none',
   });
 
   if (!foundUser) {
@@ -260,10 +260,10 @@ export const renewToken = async (
   const oldToken: any = req.cookies?.auth_token;
 
   // Remove current access cookie
-  res.clearCookie("auth_token", {
+  res.clearCookie('auth_token', {
     httpOnly: true,
     secure: true,
-    sameSite: "none",
+    sameSite: 'none',
   });
 
   try {
@@ -316,10 +316,10 @@ export const renewToken = async (
         await foundUser.save();
 
         // send new refresh token as cookie to client
-        res.cookie("auth_token", refreshToken, {
+        res.cookie('auth_token', refreshToken, {
           httpOnly: true,
           secure: true,
-          sameSite: "none",
+          sameSite: 'none',
           maxAge:
             parseInt(process.env.COOKIE_CLIENT_MAXAGE as string) *
             1000 *
@@ -385,7 +385,7 @@ export const findAccountByEmail = async (
       });
       // Email address dose not exit
       if (!foundUser) {
-        return res.status(401).json({ error: "EmailDoseNotExist" });
+        return res.status(401).json({ error: 'EmailDoseNotExist' });
       }
       // send authenticated user information to client
       return res.json({
@@ -405,7 +405,7 @@ export const sendResetPasswordCode = async (
   next: NextFunction
 ) => {
   if (!req.body.email) {
-    return res.status(401).json({ error: "InvalidEmail" });
+    return res.status(401).json({ error: 'InvalidEmail' });
   }
   try {
     // Find when the email address exist
@@ -414,7 +414,7 @@ export const sendResetPasswordCode = async (
     });
     // Email address dose not exit
     if (!foundUser) {
-      return res.status(401).json({ error: "EmailDoseNotExist" });
+      return res.status(401).json({ error: 'EmailDoseNotExist' });
     }
 
     // Remove old reset password code from codes model
@@ -423,7 +423,7 @@ export const sendResetPasswordCode = async (
     // create new code
     const code = randomstring.generate({
       length: 6,
-      charset: "alphabetic",
+      charset: 'alphabetic',
     });
 
     // create new code record in db
@@ -437,10 +437,82 @@ export const sendResetPasswordCode = async (
     // send code by email
     sendResetPasswordCodeByEmail(foundUser.email, foundUser.fname, code);
 
-    // send authenticated user information to client
-    return res.json({
-      email: foundUser.email,
-      image: foundUser.image,
+    // send successful message to client
+    return res.status(200).json({
+      message: 'ResetCodeSended',
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+// verify code for reset password
+export const verifyResetCode = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  if (!req.body.email) {
+    return res.status(401).json({ error: 'InvalidEmail' });
+  }
+  if (!req.body.code) {
+    return res.status(401).json({ error: 'CodeIsEmpty' });
+  }
+  try {
+    // Find when the email address exist
+    const foundUser = await userModel.findOne<UserSchema | undefined>({
+      email: req.body.email,
+    });
+    // Email address dose not exit
+    if (!foundUser) {
+      return res.status(401).json({ error: 'EmailDoseNotExist' });
+    }
+
+    // Find code by user id
+    const code = await resetPasswordModel.findOne({ user: foundUser._id });
+
+    // The code that user enterd is match with the code in DB
+    if (code?.code === req.body.code) {
+      return res.status(200).json({
+        code: code?.code,
+      });
+    }
+    // The code that user enterd is not match with the code in DB
+    else {
+      return res.status(400).json({
+        message: 'CodeIsNotMatch',
+      });
+    }
+  } catch (err) {
+    next(err);
+  }
+};
+
+// Cancel password reset
+export const cancelResetPassword = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  if (!req.body.email) {
+    return res.status(401).json({ error: 'InvalidEmail' });
+  }
+  try {
+    // Find when the email address exist
+    const foundUser = await userModel.findOne<UserSchema | undefined>({
+      email: req.body.email,
+    });
+    // Email address dose not exit
+    if (!foundUser) {
+      return res.status(401).json({ error: 'EmailDoseNotExist' });
+    }
+
+    // Remove old reset password code from codes model
+    await resetPasswordModel.findOneAndDelete({ user: foundUser._id });
+
+    // send successful message to client
+    return res.status(200).json({
+      message: 'ResetCodeCanceled',
     });
   } catch (err) {
     next(err);

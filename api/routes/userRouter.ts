@@ -4,11 +4,14 @@ import registerValidator from '../validators/registerValidator';
 import findUserValidator from '../validators/findUserValidator';
 import {
   authUser,
+  cancelResetPassword,
   findAccountByEmail,
   registerUser,
   renewToken,
   resendVerification,
+  sendResetPasswordCode,
   signOut,
+  verifyResetCode,
   verifyUser,
 } from '../db/controllers/userController';
 import JWTVerification from '../middlewares/jwt';
@@ -21,6 +24,9 @@ userRouter.post('/auth', authValidator, authUser);
 userRouter.get('/signout', signOut);
 userRouter.get('/renew', renewToken);
 userRouter.post('/finduser', findUserValidator, findAccountByEmail);
+userRouter.post('/sendresetcode', findUserValidator, sendResetPasswordCode);
+userRouter.post('/verifyresetcode', findUserValidator, verifyResetCode);
+userRouter.post('/cancelresetcode', findUserValidator, cancelResetPassword);
 
 // Peotected routes
 userRouter.use(JWTVerification);
