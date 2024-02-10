@@ -17,7 +17,7 @@ const LoginErrors = ({ error }: Props) => {
   } else if (error.includes('404')) {
     return t('404');
   } else {
-    return t(error);
+    return error;
   }
 };
 

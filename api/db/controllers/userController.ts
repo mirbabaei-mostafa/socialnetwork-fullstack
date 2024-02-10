@@ -452,6 +452,8 @@ export const verifyResetCode = async (
   res: Response,
   next: NextFunction
 ) => {
+  console.log(req.body.email);
+  console.log(req.body.code);
   if (!req.body.email) {
     return res.status(401).json({ error: 'InvalidEmail' });
   }
@@ -471,8 +473,9 @@ export const verifyResetCode = async (
     // Find code by user id
     const code = await resetPasswordModel.findOne({ user: foundUser._id });
 
+    console.log(code);
     // The code that user enterd is match with the code in DB
-    if (code?.code === req.body.code) {
+    if (code?.code.toString() === req.body.code.toString()) {
       return res.status(200).json({
         code: code?.code,
       });

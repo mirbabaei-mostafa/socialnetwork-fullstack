@@ -12,6 +12,7 @@ import {
 import { shallowEqual } from 'react-redux';
 import { RootState } from '../../redux/store';
 import { ForgotProps } from '../../utils/type';
+import { useEffect } from 'react';
 
 const FindAcount = (props: ForgotProps) => {
   const { t } = useTranslation();
@@ -37,10 +38,13 @@ const FindAcount = (props: ForgotProps) => {
 
   const onSubmitHandler: SubmitHandler<EmailI> = async (data: EmailI) => {
     dispatch(findUserByEmail(data));
-    if (forgotState.success) {
+  };
+
+  useEffect(() => {
+    if (forgotState.userSuccess) {
       props.stateFN(1);
     }
-  };
+  }, [forgotState]);
 
   return (
     <>

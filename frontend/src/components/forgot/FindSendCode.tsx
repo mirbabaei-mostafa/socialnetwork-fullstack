@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { ForgotInfo, sendResetCode } from '../../redux/slices/forgotSlice';
@@ -20,10 +20,13 @@ const FindSendCode = (props: ForgotProps) => {
 
   const handelSubmit = () => {
     dispatch(sendResetCode({ email: forgotState.email }));
-    if (!forgotState.error) {
+  };
+
+  useEffect(() => {
+    if (forgotState.sendCodeSuccess) {
       props.stateFN(2);
     }
-  };
+  }, [forgotState]);
 
   return (
     <>

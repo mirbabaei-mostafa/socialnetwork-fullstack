@@ -13,7 +13,10 @@ export interface ForgotInfo {
   email: string;
   image: string;
   isLoading: boolean;
-  success: boolean;
+  userSuccess: boolean;
+  sendCodeSuccess: boolean;
+  verifySuccess: boolean;
+  cancelSuccess: boolean;
   error: string;
 }
 
@@ -21,7 +24,10 @@ const initialState: ForgotInfo = {
   email: '',
   image: '',
   isLoading: false,
-  success: false,
+  userSuccess: false,
+  sendCodeSuccess: false,
+  verifySuccess: false,
+  cancelSuccess: false,
   error: '',
 };
 
@@ -38,12 +44,7 @@ export const findUserByEmail = createAsyncThunk(
           withCredentials: true,
         }
       );
-      // const response = await axiosPrivate.post(
-      //   '/user/auth',
-      //   JSON.stringify(authInfo)
-      // );
       return response.data;
-      // .then((response) => response.data);
     } catch (err: unknown | any) {
       if (!err?.response) {
         return rejectWithValue('ServerIsNotAccessable');
@@ -62,7 +63,7 @@ export const findUserByEmail = createAsyncThunk(
   }
 );
 
-// Find user by email address
+// Send code by email to reset password
 export const sendResetCode = createAsyncThunk(
   'user/forgotcode',
   async (data: EmailI, { rejectWithValue }) => {
@@ -94,7 +95,7 @@ export const sendResetCode = createAsyncThunk(
   }
 );
 
-// Cancel password reset - Code must be delete
+// Verify stored code with entered code by user
 export const verifyResetCode = createAsyncThunk(
   'user/forgotcodeverify',
   async (data: EmailCode, { rejectWithValue }) => {
@@ -171,7 +172,10 @@ export const forgotSlice = createSlice({
   extraReducers: (builder) => {
     builder.addCase(findUserByEmail.pending, (state) => {
       state.isLoading = true;
-      state.success = false;
+      state.userSuccess = false;
+      state.sendCodeSuccess = false;
+      state.verifySuccess = false;
+      state.cancelSuccess = false;
       state.error = '';
       // return {
       //   ...state,
@@ -186,7 +190,7 @@ export const forgotSlice = createSlice({
         state.email = action.payload?.email;
         state.image = action.payload?.image;
         state.isLoading = false;
-        state.success = true;
+        state.userSuccess = true;
         state.error = '';
         // return {
         //   ...state,
@@ -202,7 +206,7 @@ export const forgotSlice = createSlice({
       state.email = '';
       state.image = '';
       state.isLoading = false;
-      state.success = false;
+      state.userSuccess = false;
       state.error =
         (action.payload as string) || (action.error.message as string);
       // return {
@@ -218,21 +222,24 @@ export const forgotSlice = createSlice({
     // Send reset code for changeing passworf by email
     builder.addCase(sendResetCode.pending, (state) => {
       state.isLoading = true;
-      state.success = false;
+      state.userSuccess = false;
+      state.sendCodeSuccess = false;
+      state.verifySuccess = false;
+      state.cancelSuccess = false;
       state.error = '';
     });
     builder.addCase(sendResetCode.fulfilled, (state) => {
       // state.email = action.payload?.email;
       // state.image = action.payload?.image;
       state.isLoading = false;
-      state.success = true;
+      state.sendCodeSuccess = true;
       state.error = '';
     });
     builder.addCase(sendResetCode.rejected, (state, action) => {
       // state.email = '';
       // state.image = '';
       state.isLoading = false;
-      state.success = false;
+      state.sendCodeSuccess = false;
       state.error =
         (action.payload as string) || (action.error.message as string);
     });
@@ -240,21 +247,24 @@ export const forgotSlice = createSlice({
     // Check if the code by user entered is match with the code in DB
     builder.addCase(verifyResetCode.pending, (state) => {
       state.isLoading = true;
-      state.success = false;
+      state.userSuccess = false;
+      state.sendCodeSuccess = false;
+      state.verifySuccess = false;
+      state.cancelSuccess = false;
       state.error = '';
     });
     builder.addCase(verifyResetCode.fulfilled, (state) => {
       // state.email = action.payload?.email;
       // state.image = action.payload?.image;
       state.isLoading = false;
-      state.success = true;
+      state.verifySuccess = true;
       state.error = '';
     });
     builder.addCase(verifyResetCode.rejected, (state, action) => {
       // state.email = '';
       // state.image = '';
       state.isLoading = false;
-      state.success = false;
+      state.verifySuccess = false;
       state.error =
         (action.payload as string) || (action.error.message as string);
     });
@@ -262,21 +272,24 @@ export const forgotSlice = createSlice({
     // Check if the code by user entered is match with the code in DB
     builder.addCase(cancelResetCode.pending, (state) => {
       state.isLoading = true;
-      state.success = false;
+      state.userSuccess = false;
+      state.sendCodeSuccess = false;
+      state.verifySuccess = false;
+      state.cancelSuccess = false;
       state.error = '';
     });
     builder.addCase(cancelResetCode.fulfilled, (state) => {
       state.email = '';
       state.image = '';
       state.isLoading = false;
-      state.success = true;
+      state.cancelSuccess = true;
       state.error = '';
     });
     builder.addCase(cancelResetCode.rejected, (state, action) => {
       state.email = '';
       state.image = '';
       state.isLoading = false;
-      state.success = false;
+      state.cancelSuccess = false;
       state.error =
         (action.payload as string) || (action.error.message as string);
     });

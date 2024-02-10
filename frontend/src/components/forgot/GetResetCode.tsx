@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ForgotProps } from '../../utils/type';
 import { useTranslation } from 'react-i18next';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
@@ -9,7 +9,7 @@ import {
 } from '../../redux/slices/forgotSlice';
 import { RootState } from '../../redux/store';
 import { shallowEqual } from 'react-redux';
-import ReactInputVerificationCode from 'react-input-verification-code';
+import VerificationInput from 'react-verification-input';
 import { useNavigate } from 'react-router-dom';
 
 const GetResetCode = (props: ForgotProps) => {
@@ -24,12 +24,18 @@ const GetResetCode = (props: ForgotProps) => {
   );
   const dispatch = useAppDispatch();
 
-  const onSubmitHandel = () => {
-    dispatch(verifyResetCode({ email: forgotState.email, code: resetCode }));
-    if (forgotState.success) {
+  const onSubmitHandel = (value: string) => {
+    dispatch(verifyResetCode({ email: forgotState.email, code: value }));
+  };
+
+  useEffect(() => {
+    if (forgotState.verifySuccess) {
       props.stateFN(3);
     }
-  };
+    if (!forgotState.error) {
+      setResetCode('');
+    }
+  }, [forgotState]);
 
   const cancelReset = () => {
     dispatch(cancelResetCode({ email: forgotState.email }));
@@ -41,15 +47,22 @@ const GetResetCode = (props: ForgotProps) => {
       <div className="w-[510px] text-left pt-7 pb-3 font-roboto font-normal text-gray-800 text-[14px]">
         {t('HowToRecieveCode')}
       </div>
-      <div className="custom-styles">
-        <ReactInputVerificationCode
-          autoFocus
-          placeholder=""
-          value={resetCode}
-          onChange={setResetCode}
-          onCompleted={onSubmitHandel}
+      <div>
+        <VerificationInput
           length={6}
-          type="text"
+          value={resetCode}
+          validChars="A-Za-z0-9"
+          placeholder=""
+          autoFocus
+          onChange={setResetCode}
+          onComplete={onSubmitHandel}
+          classNames={{
+            container: 'vi-container',
+            character: 'vi-character',
+            characterInactive: 'vi-character--inactive',
+            characterSelected: 'vi-character--selected',
+            characterFilled: 'vi-character--filled',
+          }}
         />
       </div>
       {forgotState.error && (

@@ -25,35 +25,19 @@
   .select-form {
     @apply font-sans text-xs border-gray-600 rounded py-3 pl-3 pr-7 items-start;
   }
-  .custom-styles {
-    --ReactInputVerificationCode-itemWidth: 2.5rem;
-    --ReactInputVerificationCode-itemHeight: 3.5rem;
+  .vi-container {
+    @apply border-2 border-myorange-dark hover:border-myorange rounded-md p-3 h-[82px] w-[400px] mt-3 mb-2 outline-none hover:outline-none;
   }
-
-  .custom-styles .ReactInputVerificationCode__item {
-    position: relative;
-    color: #262626;
-    font-weight: 500;
+  .vi-character {
+    @apply border-2 border-mygreen-light h-14 w-14 font-title font-bold text-gray-700 text-[24px] pb-1 px-2 rounded-md;
   }
-
-  .custom-styles .ReactInputVerificationCode__item,
-  .custom-styles .ReactInputVerificationCode__item.is-active {
-    box-shadow: none;
+  .vi-character--inactive {
+    @apply border-2 border-gray-200 bg-gray-100 rounded-md;
   }
-
-  .custom-styles .ReactInputVerificationCode__item:after {
-    content: '';
-    display: block;
-    position: absolute;
-    left: 0;
-    bottom: 0;
-    right: 0;
-    height: 2px;
-    background-color: #ebebeb;
-    transition: background-color 0.2s ease-out;
+  .vi-character--selected {
+    @apply border-2 border-mygreen-dark rounded-md outline-none;
   }
-
-  .custom-styles .ReactInputVerificationCode__item.is-active:after {
-    background-color: #046cde;
+  .vi-character--filled {
+    @apply border-2 border-mycyan-dark rounded-md;
   }
 }
