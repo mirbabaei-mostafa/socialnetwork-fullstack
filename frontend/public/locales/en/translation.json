@@ -90,5 +90,8 @@
   "Continue": "Continue",
   "InvalidEmail": "Invalid E-Mail address!",
   "NewPasswordAndConfirm": "Please enter new password and confirm password",
-  "EnterNewPassword": "New password"
+  "EnterNewPassword": "New password",
+  "PasswordNotMatch": "Password is not match!",
+  "PasswordMustMatch": "Passwords must match",
+  "SuccessfullyResetPassword": "Your password changed successfully!"
 }

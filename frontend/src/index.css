@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600;1,700;1,800&family=Roboto+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600;1,700;1,800&family=Roboto+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap");
 
 /* This injects Tailwind's base styles and any base styles registered by plugins. */
 @tailwind base;
@@ -26,7 +26,7 @@
     @apply font-sans text-xs border-gray-600 rounded py-3 pl-3 pr-7 items-start;
   }
   .vi-container {
-    @apply border-2 border-myorange-dark hover:border-myorange rounded-md p-3 h-[82px] w-[400px] mt-3 mb-2 outline-none hover:outline-none;
+    @apply border-2 border-myorange-dark hover:border-myorange rounded-md p-3 h-[82px] w-[400px] mt-3 mb-2 focus:outline-none;
   }
   .vi-character {
     @apply border-2 border-mygreen-light h-14 w-14 font-title font-bold text-gray-700 text-[24px] pb-1 px-2 rounded-md;
@@ -35,7 +35,7 @@
     @apply border-2 border-gray-200 bg-gray-100 rounded-md;
   }
   .vi-character--selected {
-    @apply border-2 border-mygreen-dark rounded-md outline-none;
+    @apply border-2 border-mygreen-dark rounded-md focus:outline-none;
   }
   .vi-character--filled {
     @apply border-2 border-mycyan-dark rounded-md;

@@ -1,6 +1,6 @@
-import axios from '../../utils/axios';
-import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { RootState } from '../store';
+import axios from "../../utils/axios";
+import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { RootState } from "../store";
 
 export interface EmailI {
   email: string;
@@ -8,6 +8,10 @@ export interface EmailI {
 export interface EmailCode {
   email: string;
   code: string;
+}
+export interface ResetPass {
+  email: string;
+  newpassword: string;
 }
 export interface ForgotInfo {
   email: string;
@@ -17,47 +21,49 @@ export interface ForgotInfo {
   sendCodeSuccess: boolean;
   verifySuccess: boolean;
   cancelSuccess: boolean;
+  changeSuccess: boolean;
   error: string;
 }
 
 const initialState: ForgotInfo = {
-  email: '',
-  image: '',
+  email: "",
+  image: "",
   isLoading: false,
   userSuccess: false,
   sendCodeSuccess: false,
   verifySuccess: false,
   cancelSuccess: false,
-  error: '',
+  changeSuccess: false,
+  error: "",
 };
 
 // Find user by email address
 export const findUserByEmail = createAsyncThunk(
-  'user/forgot',
+  "user/forgot",
   async (data: EmailI, { rejectWithValue }) => {
     try {
       const response = await axios.post(
-        '/user/finduser',
+        "/user/finduser",
         JSON.stringify({ email: data.email }),
         {
-          headers: { 'Content-Type': 'application/json' },
+          headers: { "Content-Type": "application/json" },
           withCredentials: true,
         }
       );
       return response.data;
     } catch (err: unknown | any) {
       if (!err?.response) {
-        return rejectWithValue('ServerIsNotAccessable');
+        return rejectWithValue("ServerIsNotAccessable");
       } else if (err?.response?.status === 401) {
         return rejectWithValue(
           err?.response?.data.error
             ? err?.response?.data.error
-            : 'EmailDoseNotExist'
+            : "EmailDoseNotExist"
         );
       } else if (err instanceof Error) {
         return rejectWithValue(err.message);
       } else {
-        return rejectWithValue('GeneralError');
+        return rejectWithValue("GeneralError");
       }
     }
   }
@@ -65,31 +71,31 @@ export const findUserByEmail = createAsyncThunk(
 
 // Send code by email to reset password
 export const sendResetCode = createAsyncThunk(
-  'user/forgotcode',
+  "user/forgotcode",
   async (data: EmailI, { rejectWithValue }) => {
     try {
       const response = await axios.post(
-        '/user/sendresetcode',
+        "/user/sendresetcode",
         JSON.stringify({ email: data.email }),
         {
-          headers: { 'Content-Type': 'application/json' },
+          headers: { "Content-Type": "application/json" },
           withCredentials: true,
         }
       );
       return response.data;
     } catch (err: unknown | any) {
       if (!err?.response) {
-        return rejectWithValue('ServerIsNotAccessable');
+        return rejectWithValue("ServerIsNotAccessable");
       } else if (err?.response?.status === 401) {
         return rejectWithValue(
           err?.response?.data.error
             ? err?.response?.data.error
-            : 'EmailDoseNotExist'
+            : "EmailDoseNotExist"
         );
       } else if (err instanceof Error) {
         return rejectWithValue(err.message);
       } else {
-        return rejectWithValue('GeneralError');
+        return rejectWithValue("GeneralError");
       }
     }
   }
@@ -97,37 +103,37 @@ export const sendResetCode = createAsyncThunk(
 
 // Verify stored code with entered code by user
 export const verifyResetCode = createAsyncThunk(
-  'user/forgotcodeverify',
+  "user/forgotcodeverify",
   async (data: EmailCode, { rejectWithValue }) => {
     try {
       const response = await axios.post(
-        '/user/verifyresetcode',
+        "/user/verifyresetcode",
         JSON.stringify({ email: data.email, code: data.code }),
         {
-          headers: { 'Content-Type': 'application/json' },
+          headers: { "Content-Type": "application/json" },
           withCredentials: true,
         }
       );
       return response.data;
     } catch (err: unknown | any) {
       if (!err?.response) {
-        return rejectWithValue('ServerIsNotAccessable');
+        return rejectWithValue("ServerIsNotAccessable");
       } else if (err?.response?.status === 400) {
         return rejectWithValue(
           err?.response?.data.error
             ? err?.response?.data.error
-            : 'CodeIsNotMatch'
+            : "CodeIsNotMatch"
         );
       } else if (err?.response?.status === 401) {
         return rejectWithValue(
           err?.response?.data.error
             ? err?.response?.data.error
-            : 'EmailDoseNotExist'
+            : "EmailDoseNotExist"
         );
       } else if (err instanceof Error) {
         return rejectWithValue(err.message);
       } else {
-        return rejectWithValue('GeneralError');
+        return rejectWithValue("GeneralError");
       }
     }
   }
@@ -135,38 +141,70 @@ export const verifyResetCode = createAsyncThunk(
 
 // Cancel password reset - Code must be delete
 export const cancelResetCode = createAsyncThunk(
-  'user/forgotcodecancel',
+  "user/forgotcodecancel",
   async (data: EmailI, { rejectWithValue }) => {
     try {
       const response = await axios.post(
-        '/user/cancelresetcode',
+        "/user/cancelresetcode",
         JSON.stringify({ email: data.email }),
         {
-          headers: { 'Content-Type': 'application/json' },
+          headers: { "Content-Type": "application/json" },
           withCredentials: true,
         }
       );
       return response.data;
     } catch (err: unknown | any) {
       if (!err?.response) {
-        return rejectWithValue('ServerIsNotAccessable');
+        return rejectWithValue("ServerIsNotAccessable");
       } else if (err?.response?.status === 401) {
         return rejectWithValue(
           err?.response?.data.error
             ? err?.response?.data.error
-            : 'EmailDoseNotExist'
+            : "EmailDoseNotExist"
         );
       } else if (err instanceof Error) {
         return rejectWithValue(err.message);
       } else {
-        return rejectWithValue('GeneralError');
+        return rejectWithValue("GeneralError");
+      }
+    }
+  }
+);
+
+// Reset password
+export const resetPassword = createAsyncThunk(
+  "user/changepassword",
+  async (data: ResetPass, { rejectWithValue }) => {
+    try {
+      const response = await axios.post(
+        "/user/changepassword",
+        JSON.stringify({ email: data.email, newpassword: data.newpassword }),
+        {
+          headers: { "Content-Type": "application/json" },
+          withCredentials: true,
+        }
+      );
+      return response.data;
+    } catch (err: unknown | any) {
+      if (!err?.response) {
+        return rejectWithValue("ServerIsNotAccessable");
+      } else if (err?.response?.status === 401) {
+        return rejectWithValue(
+          err?.response?.data.error
+            ? err?.response?.data.error
+            : "EmailDoseNotExist"
+        );
+      } else if (err instanceof Error) {
+        return rejectWithValue(err.message);
+      } else {
+        return rejectWithValue("GeneralError");
       }
     }
   }
 );
 
 export const forgotSlice = createSlice({
-  name: 'forgot',
+  name: "forgot",
   initialState,
   reducers: {},
   extraReducers: (builder) => {
@@ -176,7 +214,8 @@ export const forgotSlice = createSlice({
       state.sendCodeSuccess = false;
       state.verifySuccess = false;
       state.cancelSuccess = false;
-      state.error = '';
+      state.changeSuccess = false;
+      state.error = "";
       // return {
       //   ...state,
       //   isLoading: true,
@@ -191,7 +230,7 @@ export const forgotSlice = createSlice({
         state.image = action.payload?.image;
         state.isLoading = false;
         state.userSuccess = true;
-        state.error = '';
+        state.error = "";
         // return {
         //   ...state,
         //   email: action.payload?.email,
@@ -203,8 +242,8 @@ export const forgotSlice = createSlice({
       }
     );
     builder.addCase(findUserByEmail.rejected, (state, action) => {
-      state.email = '';
-      state.image = '';
+      state.email = "";
+      state.image = "";
       state.isLoading = false;
       state.userSuccess = false;
       state.error =
@@ -226,14 +265,15 @@ export const forgotSlice = createSlice({
       state.sendCodeSuccess = false;
       state.verifySuccess = false;
       state.cancelSuccess = false;
-      state.error = '';
+      state.changeSuccess = false;
+      state.error = "";
     });
     builder.addCase(sendResetCode.fulfilled, (state) => {
       // state.email = action.payload?.email;
       // state.image = action.payload?.image;
       state.isLoading = false;
       state.sendCodeSuccess = true;
-      state.error = '';
+      state.error = "";
     });
     builder.addCase(sendResetCode.rejected, (state, action) => {
       // state.email = '';
@@ -251,14 +291,15 @@ export const forgotSlice = createSlice({
       state.sendCodeSuccess = false;
       state.verifySuccess = false;
       state.cancelSuccess = false;
-      state.error = '';
+      state.changeSuccess = false;
+      state.error = "";
     });
     builder.addCase(verifyResetCode.fulfilled, (state) => {
       // state.email = action.payload?.email;
       // state.image = action.payload?.image;
       state.isLoading = false;
       state.verifySuccess = true;
-      state.error = '';
+      state.error = "";
     });
     builder.addCase(verifyResetCode.rejected, (state, action) => {
       // state.email = '';
@@ -276,20 +317,47 @@ export const forgotSlice = createSlice({
       state.sendCodeSuccess = false;
       state.verifySuccess = false;
       state.cancelSuccess = false;
-      state.error = '';
+      state.changeSuccess = false;
+      state.error = "";
     });
     builder.addCase(cancelResetCode.fulfilled, (state) => {
-      state.email = '';
-      state.image = '';
+      state.email = "";
+      state.image = "";
       state.isLoading = false;
       state.cancelSuccess = true;
-      state.error = '';
+      state.error = "";
     });
     builder.addCase(cancelResetCode.rejected, (state, action) => {
-      state.email = '';
-      state.image = '';
+      state.email = "";
+      state.image = "";
       state.isLoading = false;
       state.cancelSuccess = false;
+      state.error =
+        (action.payload as string) || (action.error.message as string);
+    });
+
+    // Reset Password
+    builder.addCase(resetPassword.pending, (state) => {
+      state.isLoading = true;
+      state.userSuccess = false;
+      state.sendCodeSuccess = false;
+      state.verifySuccess = false;
+      state.cancelSuccess = false;
+      state.changeSuccess = false;
+      state.error = "";
+    });
+    builder.addCase(resetPassword.fulfilled, (state) => {
+      state.email = "";
+      state.image = "";
+      state.isLoading = false;
+      state.changeSuccess = true;
+      state.error = "";
+    });
+    builder.addCase(resetPassword.rejected, (state, action) => {
+      state.email = "";
+      state.image = "";
+      state.isLoading = false;
+      state.changeSuccess = false;
       state.error =
         (action.payload as string) || (action.error.message as string);
     });
