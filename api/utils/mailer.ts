@@ -1,6 +1,6 @@
-import dotenv from 'dotenv';
-import { google } from 'googleapis';
-import nodemailer from 'nodemailer';
+import dotenv from "dotenv";
+import { google } from "googleapis";
+import nodemailer from "nodemailer";
 
 dotenv.config();
 
@@ -17,18 +17,17 @@ oauth2Client.setCredentials({
 });
 
 // https://nodemailer.com/smtp/oauth2/
-const sendVerification = (email: string, name: string, url: string) => {
+const sendVerification = async (email: string, name: string, url: string) => {
   try {
-    const accessToken = oauth2Client.getAccessToken().catch((err) => {
+    const accessToken = await oauth2Client.getAccessToken().catch((err) => {
       return err;
     });
-    console.log(accessToken);
     const smtp = nodemailer.createTransport({
       host: String(process.env.GOOGLE_SMTP_HOST),
       port: Number(process.env.GOOGLE_SMTP_PORT),
       secure: true,
       auth: {
-        type: 'OAUTH2',
+        type: "OAUTH2",
         user: process.env.MAILADDRESS,
         clientId: process.env.GOOGLE_APIS_CLIENTID,
         clientSecret: process.env.GOOGLE_APIS_CLIENT_SECRET,
@@ -41,7 +40,7 @@ const sendVerification = (email: string, name: string, url: string) => {
     const message = {
       from: process.env.MAILADDRESS,
       to: email,
-      subject: 'Social Network: Verification',
+      subject: "Social Network: Verification",
       html: `<div
       style="
         max-width: 600px;
@@ -83,13 +82,13 @@ const sendVerification = (email: string, name: string, url: string) => {
 };
 
 // Send reset password code by email
-export const sendResetPasswordCodeByEmail = (
+export const sendResetPasswordCodeByEmail = async (
   email: string,
   name: string,
   code: string
 ) => {
   try {
-    const accessToken = oauth2Client.getAccessToken().catch((err) => {
+    const accessToken = await oauth2Client.getAccessToken().catch((err) => {
       return err;
     });
     const smtp = nodemailer.createTransport({
@@ -97,7 +96,7 @@ export const sendResetPasswordCodeByEmail = (
       port: Number(process.env.GOOGLE_SMTP_PORT),
       secure: true,
       auth: {
-        type: 'OAUTH2',
+        type: "OAUTH2",
         user: process.env.MAILADDRESS,
         clientId: process.env.GOOGLE_APIS_CLIENTID,
         clientSecret: process.env.GOOGLE_APIS_CLIENT_SECRET,
@@ -110,7 +109,7 @@ export const sendResetPasswordCodeByEmail = (
     const message = {
       from: process.env.MAILADDRESS,
       to: email,
-      subject: 'Social Network: Reset Password',
+      subject: "Social Network: Reset Password",
       html: `<div
       style="
         max-width: 600px;

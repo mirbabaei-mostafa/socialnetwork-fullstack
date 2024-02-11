@@ -46,7 +46,7 @@ export const registerUser = async (
         { expiresIn: "30m" }
       );
       const url: string = process.env.BASEURL + "/activate/" + mailToken;
-      sendVerification(newUser.email, newUser.username, url);
+      await sendVerification(newUser.email, newUser.username, url);
 
       // Successfull create new user
       return res.status(201).json({ message: "SuccessRegisterUser" });
@@ -120,7 +120,7 @@ export const resendVerification = async (
         { expiresIn: "30m" }
       );
       const url: string = process.env.BASEURL + "/activate/" + mailToken;
-      sendVerification(foundUser.email, foundUser.username, url);
+      await sendVerification(foundUser.email, foundUser.username, url);
 
       // Successfull create new user
       return res.status(201).json({ message: "VerificationEmailsended" });
@@ -435,7 +435,7 @@ export const sendResetPasswordCode = async (
     await newCode.save();
 
     // send code by email
-    sendResetPasswordCodeByEmail(foundUser.email, foundUser.fname, code);
+    await sendResetPasswordCodeByEmail(foundUser.email, foundUser.fname, code);
 
     // send successful message to client
     return res.status(200).json({
@@ -452,8 +452,6 @@ export const verifyResetCode = async (
   res: Response,
   next: NextFunction
 ) => {
-  console.log(req.body.email);
-  console.log(req.body.code);
   if (!req.body.email) {
     return res.status(401).json({ error: "InvalidEmail" });
   }
@@ -515,6 +513,9 @@ export const resetPassword = async (
     // Save new password
     foundUser.password = req.body.newpassword;
     await foundUser.save();
+
+    // Remove reset password code from codes model
+    await resetPasswordModel.findOneAndDelete({ user: foundUser._id });
 
     // send successful message to client
     return res.status(200).json({

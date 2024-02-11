@@ -41,11 +41,11 @@ const GetNewPassword = (props: ForgotProps) => {
     newpassword: yup
       .string()
       .required(t("PasswordRequired"))
-      .min(12, t("PasswordRequired"))
-      .matches(
-        /^(?=.*[a-z])(?=.*[A-Z])(?=.*d)(?=.*[@$!%*?&])[A-Za-zd@$!%*?&]{12,}$/,
-        t("PasswordRequired")
-      ),
+      .min(12, t("PasswordRequired")),
+    // .matches(
+    //   /^(?=.*[a-z])(?=.*[A-Z])(?=.*d)(?=.*[@$!%*?&])[A-Za-zd@$!%*?&]{12,}$/,
+    //   t("PasswordRequired")
+    // ),
     newpasswordconfirm: yup
       .string()
       .required(t("ConfirmPasswordRequired"))
