@@ -1,21 +1,23 @@
-import express, { Request, Response, Application, NextFunction } from "express";
-import dotenv from "dotenv";
-import { connectDB } from "./db/mongodb";
-import mongoose from "mongoose";
-import userRouter from "./routes/userRouter";
-import cookieParser from "cookie-parser";
-import { corsOptions, credentialCors } from "./utils/corsconfig";
-import cors, { CorsOptions } from "cors";
-import fileUpload from "express-fileupload";
+import express, { Request, Response, Application, NextFunction } from 'express';
+import dotenv from 'dotenv';
+import { connectDB } from './db/mongodb';
+import mongoose from 'mongoose';
+import userRouter from './routes/userRouter';
+import postRouter from './routes/postRouter';
+import cookieParser from 'cookie-parser';
+import { corsOptions, credentialCors } from './utils/corsconfig';
+import cors, { CorsOptions } from 'cors';
+import fileUpload from 'express-fileupload';
+import JWTVerification from './middlewares/jwt';
 
 const app: Application = express();
 
 dotenv.config();
-const port: string = process.env.PORT || "8000";
+const port: string = process.env.PORT || '8000';
 
 connectDB();
 
-mongoose.connection.once("open", () => {
+mongoose.connection.once('open', () => {
   app.listen(port, () => {
     console.log(`Server started at http://localhost:${port}`);
   });
@@ -33,12 +35,14 @@ app.use(fileUpload({ useTempFiles: true }));
 // app.use('/user/auth', authRouter);
 // app.use('/user/renew', renewRouter);
 
-app.use("/user", userRouter);
+app.use('/user', userRouter);
+// For all authenticared user can acces to post routers with JWTVerification
+app.use('/post', JWTVerification, postRouter);
 
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
   console.log(err);
   const errStatus: number = err.status || 500;
-  const errMessage: string = err.message || "InternalServerError";
+  const errMessage: string = err.message || 'InternalServerError';
   return res
     .status(errStatus)
     .send({ success: false, message: errMessage, status: errStatus });
