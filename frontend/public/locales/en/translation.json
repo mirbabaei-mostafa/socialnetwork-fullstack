@@ -93,5 +93,10 @@
   "EnterNewPassword": "New password",
   "PasswordNotMatch": "Password is not match!",
   "PasswordMustMatch": "Passwords must match",
-  "SuccessfullyResetPassword": "Your password changed successfully!"
+  "SuccessfullyResetPassword": "Your password changed successfully!",
+  "WhatsOnYourMind": "What's on your mind",
+  "LiveVideo": "Live video",
+  "PhotoVideo": "Photo/Video",
+  "FeelingActivity": "Feeling/Activity",
+  "CreateNewPost": "Create new post"
 }

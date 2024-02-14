@@ -1,14 +1,16 @@
-import { configureStore } from "@reduxjs/toolkit";
+import { configureStore } from '@reduxjs/toolkit';
 // import { composeWithDevTools } from '@redux-devtools/extension';
-import userReducer from "./slices/userSlice";
-import registerReducer from "./slices/registerSlice";
-import forgotReducer from "./slices/forgotSlice";
+import userReducer from './slices/userSlice';
+import registerReducer from './slices/registerSlice';
+import forgotReducer from './slices/forgotSlice';
+import postReducer from './slices/postSlice';
 
 export const store = configureStore({
   reducer: {
     user: userReducer,
     register: registerReducer,
     forgot: forgotReducer,
+    post: postReducer,
   },
 });
 
