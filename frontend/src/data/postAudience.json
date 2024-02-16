@@ -1,0 +1,32 @@
+[
+  {
+    "title": "Public",
+    "desc": "Anyone on or off App",
+    "image": "./images/menu/audience_public.png"
+  },
+  {
+    "title": "Friends",
+    "desc": "Your friends on App",
+    "image": "./images/menu/audience_friends.png"
+  },
+  {
+    "title": "Friends expect...",
+    "desc": "Don't show to some friends",
+    "image": "./images/menu/audience_friendsexpect.png"
+  },
+  {
+    "title": "Specific friends",
+    "desc": "Only show to some friends",
+    "image": "./images/menu/audience_specificfriends.png"
+  },
+  {
+    "title": "Only me",
+    "desc": "Show only for me",
+    "image": "./images/menu/audience_only.png"
+  },
+  {
+    "title": "Custum",
+    "desc": "Include and exclude friends and lists",
+    "image": "./images/menu/audience_custum.png"
+  }
+]
