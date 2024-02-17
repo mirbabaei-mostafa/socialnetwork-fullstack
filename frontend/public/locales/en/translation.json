@@ -110,5 +110,8 @@
   "CheckIn": "Check in",
   "Gif": "Gif",
   "More": "More",
-  "Post": "Post"
+  "Post": "Post",
+  "AddPhotoVideos": "Add Photo/Videos",
+  "ImageFormatError": "Only supported Jpeg, Png, Webp and Gif. File is unsupported: ",
+  "ImageSizeError": "Image size is too large. File is unsupported: "
 }
