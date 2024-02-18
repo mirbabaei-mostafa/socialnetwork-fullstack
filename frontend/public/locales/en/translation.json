@@ -96,6 +96,7 @@
   "SuccessfullyResetPassword": "Your password changed successfully!",
   "WhatsOnYourMind": "What's on your mind",
   "LiveVideo": "Live video",
+  "Background": "Add background",
   "PhotoVideo": "Photo/Video",
   "FeelingActivity": "Feeling/Activity",
   "CreateNewPost": "Create new post",
@@ -114,5 +115,8 @@
   "AddPhotoVideos": "Add Photo/Videos",
   "ImageFormatError": "Only supported Jpeg, Png, Webp and Gif. File is unsupported: ",
   "ImageSizeError": "Image size is too large. File is unsupported: ",
-  "SelectOneBelowBg": "Select one of below background images!"
+  "SelectOneBelowBg": "Select one of below background images!",
+  "AddPhoto": "Add Photo",
+  "RemovePhoto": "Remove Photo",
+  "RemoveAll": "Remove All"
 }
