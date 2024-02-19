@@ -1,4 +1,4 @@
-import React, {
+import {
   ChangeEvent,
   MutableRefObject,
   useEffect,
@@ -6,6 +6,7 @@ import React, {
   useState,
 } from 'react';
 import { useTranslation } from 'react-i18next';
+import SpinnerBarLoader from '../spinners/SpinnerBarLoader';
 
 interface ImageProps {
   setShowImageBox: (value: boolean) => void;
@@ -19,12 +20,16 @@ const ImageCordinator = ({
   setImageArr,
 }: ImageProps) => {
   const [errorMessage, setErrorMessage] = useState<string>('');
+  const [isLoading, setLoading] = useState<boolean>(false);
+  const [imageList, setImageList] = useState<string[]>([]);
   const { t } = useTranslation();
   const imagesRef = useRef() as MutableRefObject<HTMLInputElement>;
 
   const handleUpload = (e: ChangeEvent<HTMLInputElement>) => {
+    setLoading(true);
     const files = (e.target as HTMLInputElement).files as FileList;
-    const imageFileList: string[] = [];
+    // const imageFileList: string[] = imageArr;
+    // const imageFileList: string[] = [];
     Array.from(files).forEach((image) => {
       if (!['jpeg', 'gif', 'webp', 'png'].includes(image.type.split('/')[1])) {
         setErrorMessage(t('ImageFormatError') + image.name);
@@ -39,20 +44,29 @@ const ImageCordinator = ({
         const fileReader = new FileReader();
         fileReader.readAsDataURL(image);
         fileReader.onload = (readerEvent) => {
-          imageFileList.push(readerEvent.target?.result as string);
+          // imageFileList.push(readerEvent.target?.result as string);
+          // setImageList([...imageList, readerEvent.target?.result as string]);
+          setImageArr((imageArr: string[]): void => [
+            ...imageArr,
+            readerEvent.target?.result as string,
+          ]);
         };
       }
     });
-    setImageArr([...imageArr, ...imageFileList]);
-    console.log(imageArr);
+    setLoading(false);
+    // setImageArr([...imageArr, ...imageFileList]);
+    // setImageArr([...imageFileList]);
+    // setImageArr([...imageArr, ...imageFileList]);
   };
-
   // useEffect(() => {
-  //   () => setImageArr([...imageArr, ...imageArrTemp]);
-  // }, [imageArrTemp]);
+  //   setImageArr([...imageArr, ...imageList]);
+  // }, [imageList]);
+
+  console.log(imageArr);
 
   return (
     <div className="relative mx-2 my-1 w-[510px] h-44 border-2 rounded-md border-gray-400  overflow-y-scroll scrollbar-thin scrollbar-thumb-gray-200  scrollbar-thumb-rounded-md text-[16px]">
+      <SpinnerBarLoader isLoading={isLoading} />
       <input
         type="file"
         ref={imagesRef}
