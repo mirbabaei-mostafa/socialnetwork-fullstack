@@ -5,13 +5,7 @@ import { UserState } from '../../redux/slices/userSlice';
 import { useAppSelector } from '../../redux/hooks';
 import { RootState } from '../../redux/store';
 import { shallowEqual } from 'react-redux';
-import {
-  LegacyRef,
-  MutableRefObject,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
+import { MutableRefObject, useEffect, useRef, useState } from 'react';
 import PostAudienceArray from '../../data/postAudience.json';
 import PostAudiences from './PostAudiences';
 import EmojiPickerPanel from './EmojiPickerPanel';
