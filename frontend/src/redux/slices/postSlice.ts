@@ -41,8 +41,8 @@ export interface PostI {
   // user: string;
   type: string | null;
   text: string;
-  images: FormData;
-  background: FormData;
+  images: string[];
+  background: string;
 }
 
 export const createPost = createAsyncThunk(

@@ -25,8 +25,10 @@ const FileUploadChecker = async (
   res: Response,
   next: NextFunction
 ) => {
+  console.log(req);
   if (!req.files || Object.values(req.files).flat().length === 0) {
-    return res.status(400).json({ message: 'NoFileHasBeenSelected' });
+    // return res.status(400).json({ message: 'NoFileHasBeenSelected' });
+    return res.status(400);
   }
 
   const fileTypes: string[] = ['jpeg', 'png', 'git', 'webp'];

@@ -9,10 +9,13 @@ export const createPost = async (
   res: Response,
   next: NextFunction
 ) => {
+  console.log('Post');
   if (!req.body.text && !req.body.images && !req.body.background) {
+    console.log('PostCouldNotBeEmpty');
     return res.status(401).json({ message: 'PostCouldNotBeEmpty' });
   }
   try {
+    console.log(req.body);
     // Create new post
     const newPost = new postModel({
       user: req.body.userId,

@@ -2,7 +2,7 @@ import { Helmet } from 'react-helmet-async';
 import { useTranslation } from 'react-i18next';
 import { IoMdCloseCircle } from 'react-icons/io';
 import { UserState } from '../../redux/slices/userSlice';
-import { useAppSelector } from '../../redux/hooks';
+import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { RootState } from '../../redux/store';
 import { shallowEqual } from 'react-redux';
 import { MutableRefObject, useEffect, useRef, useState } from 'react';
@@ -11,6 +11,7 @@ import PostAudiences from './PostAudiences';
 import EmojiPickerPanel from './EmojiPickerPanel';
 import ImageCordinator from './ImageCordinator';
 import BackgroundCordinator from './BackgroundCordinator';
+import { PostState, createPost } from '../../redux/slices/postSlice';
 
 type Props = {
   //   regFn: React.Dispatch<React.SetStateAction<boolean>>;
@@ -37,6 +38,10 @@ const CreatePost = (props: Props) => {
   const userState: UserState = useAppSelector((state: RootState): UserState => {
     return state.user as UserState;
   }, shallowEqual);
+  const postState: PostState = useAppSelector((state: RootState): PostState => {
+    return state.post as PostState;
+  }, shallowEqual);
+  const dispatch = useAppDispatch();
   const { t } = useTranslation();
 
   useEffect(() => {
@@ -49,8 +54,49 @@ const CreatePost = (props: Props) => {
   }, [postAudience]);
 
   useEffect(() => {
-    postText.length ? setIsDisable(false) : setIsDisable(true);
-  }, [postText]);
+    postText.length || imageArr.length
+      ? setIsDisable(false)
+      : setIsDisable(true);
+  }, [postText, imageArr]);
+
+  const handelPostSending = () => {
+    if (bgImage) {
+      dispatch(
+        createPost({
+          type: null,
+          text: postText,
+          images: [],
+          background: bgImage,
+        })
+      );
+    } else if (imageArr.length) {
+      let formData = new FormData();
+
+      dispatch(
+        createPost({
+          type: null,
+          text: postText,
+          images: imageArr as string[],
+          background: bgImage,
+        })
+      );
+    }
+
+    if (bgImage) {
+      dispatch(postAction(axiosPrivate, { text, background: bgImage }));
+    } else if (images?.length) {
+      const postImages = images.map((img) => dataurlToBlob(img));
+      const path = `${user?.userInfo?.username}/post images`;
+      let formData = new FormData();
+      formData.append('path', path);
+      postImages.forEach((img) => {
+        formData.append('file', img);
+      });
+      dispatch(postAction(axiosPrivate, { text, path }, formData));
+    } else if (text) {
+      dispatch(postAction(axiosPrivate, { text }));
+    }
+  };
 
   return (
     <div className="relative rounded shadow-md shadow-gray-300 bg-white m-auto w-[530px] min-h-[350px] flex flex-col justify-start items-start">
@@ -203,8 +249,16 @@ const CreatePost = (props: Props) => {
               />
             </span>
           </div>
+          {postState.error && (
+            <div className="text-center border-2 border-red-300 bg-red-200 rounded-md px-3 py-1 mx-2 my-3 w-[510px]">
+              <span className="font-roboto font-bold text-red-700 text-[14px]">
+                {postState.error}
+              </span>
+            </div>
+          )}
           <button
             disabled={isDisable}
+            onClick={handelPostSending}
             className="w-[500px] mx-[14px] my-3 shadow-sm shadow-mycyan disabled:shadow-gray-500 py-2 rounded border border-mycyan-dark disabled:border-gray-600 bg-mycyan hover:bg-mycyan-dark transition-colors disabled:bg-gray-400 text-white font-bold font-roboto text-md disabled:cursor-not-allowed cursor-pointer"
           >
             {t('Post')}
