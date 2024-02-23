@@ -1,7 +1,8 @@
-import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { RootState } from "../store";
-import axios, { axiosPrivate } from "../../utils/axios";
-import { FieldArray } from "react-hook-form";
+import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { RootState } from '../store';
+import axios, { axiosPrivate } from '../../utils/axios';
+import { FieldArray } from 'react-hook-form';
+import { json } from 'react-router-dom';
 
 export interface Post {
   // user: string;
@@ -27,13 +28,13 @@ export interface PostState {
 
 const initialState: PostState = {
   isLoading: false,
-  error: "",
+  error: '',
   postInfo: {
     // user: '',
     type: null,
-    text: "",
+    text: '',
     images: [],
-    background: "",
+    background: '',
     comments: [],
   },
 };
@@ -48,45 +49,50 @@ export interface PostI {
 }
 
 export const createPost = createAsyncThunk(
-  "post/create",
+  'post/create',
   async (postInfo: PostI, { rejectWithValue }) => {
     let imgResp;
     let bgResp;
     try {
-      if (postInfo.images) {
+      if (postInfo.formData) {
         imgResp = await axiosPrivate.post(
-          "/post/uploadImages",
-          postInfo.formData,
+          '/post/uploadImages',
+          JSON.stringify({
+            body: postInfo.formData,
+          }),
+          // postInfo.formData,
           {
+            // onUploadProgress: (ProgressEvent) =>
+            //   console.log(ProgressEvent.progress),
             headers: {
-              "Content-Type": "multipart/form-data",
+              'Content-Type': 'multipart/form-data',
             },
           }
         );
       }
       if (postInfo.background) {
         bgResp = await axiosPrivate.post(
-          "/post/uploadImages",
+          '/post/uploadImages',
           postInfo.background,
           {
             headers: {
-              "Content-Type": "multipart/form-data",
+              'Content-Type': 'multipart/form-data',
             },
           }
         );
       }
       const response: Post = await axiosPrivate
         .post(
-          "/post/createPost",
+          '/post/createPost',
           JSON.stringify({
             email: postInfo.email,
             type: postInfo.type,
             text: postInfo.text,
             images: imgResp?.data.images ? imgResp?.data.images : [],
-            background: bgResp?.data.images ? bgResp?.data.images : "",
+            background: bgResp?.data.images ? bgResp?.data.images : '',
           }),
           {
-            headers: { "Content-Type": "application/json" },
+            headers: { 'Content-Type': 'application/json' },
             withCredentials: true,
           }
         )
@@ -96,40 +102,40 @@ export const createPost = createAsyncThunk(
       return response;
     } catch (err: any) {
       if (!err?.response) {
-        return rejectWithValue("ServerIsNotAccessable");
+        return rejectWithValue('ServerIsNotAccessable');
       } else if (err?.response?.status === 401) {
         return rejectWithValue(
           err?.response?.data.error
             ? err?.response?.data.error
-            : "PostCouldNotBeEmpty"
+            : 'PostCouldNotBeEmpty'
         );
       } else if (err instanceof Error) {
         return rejectWithValue(err.message);
       } else {
-        return rejectWithValue("GeneralError");
+        return rejectWithValue('GeneralError');
       }
     }
   }
 );
 
 export const postSlice = createSlice({
-  name: "post",
+  name: 'post',
   initialState,
   reducers: {},
   extraReducers: (builder) => {
     builder.addCase(createPost.pending, (state) => {
-      state.error = "";
+      state.error = '';
       state.isLoading = true;
       // state.postInfo.user = '';
       state.postInfo.type = null;
-      state.postInfo.text = "";
+      state.postInfo.text = '';
       state.postInfo.images = [];
-      state.postInfo.background = "";
+      state.postInfo.background = '';
     });
     builder.addCase(
       createPost.fulfilled,
       (state, action: PayloadAction<Post>) => {
-        state.error = "";
+        state.error = '';
         state.isLoading = false;
         // state.postInfo.user = action?.payload?.user;
         state.postInfo.type = null;
@@ -144,9 +150,9 @@ export const postSlice = createSlice({
       state.isLoading = true;
       // state.postInfo.user = '';
       state.postInfo.type = null;
-      state.postInfo.text = "";
+      state.postInfo.text = '';
       state.postInfo.images = [];
-      state.postInfo.background = "";
+      state.postInfo.background = '';
     });
   },
 });

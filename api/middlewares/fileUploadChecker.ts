@@ -1,7 +1,7 @@
-import { NextFunction, Request, Response } from "express";
-import { UploadedFile } from "express-fileupload";
-import FileSystem from "fs";
-import dotenv from "dotenv";
+import { NextFunction, Request, Response } from 'express';
+import { UploadedFile } from 'express-fileupload';
+import FileSystem from 'fs';
+import dotenv from 'dotenv';
 
 dotenv.config();
 
@@ -25,23 +25,24 @@ const FileUploadChecker = async (
   res: Response,
   next: NextFunction
 ) => {
+  const uploaderFiles: UploadedFile[] = req.body.files;
   console.log(req);
-  if (!req.files || Object.values(req.files).flat().length === 0) {
+  if (!uploaderFiles || Object.values(uploaderFiles).flat().length === 0) {
     // if (!req.body.file || Object.values(req.body.file).flat().length === 0) {
     // return res.status(400).json({ message: 'NoFileHasBeenSelected' });
     return res.status(400);
   }
 
-  const fileTypes: string[] = ["jpeg", "png", "git", "webp"];
-  let files: UploadedFile[] = Object.values(req.files).flat();
+  const fileTypes: string[] = ['jpeg', 'png', 'git', 'webp'];
+  let files: UploadedFile[] = Object.values(uploaderFiles).flat();
   // let files: UploadedFile[] = Object.values(req.body.file).flat();
 
   try {
     files.forEach((file) => {
       // Checking file's format
-      if (!fileTypes.includes(file.mimetype.split("/")[1])) {
+      if (!fileTypes.includes(file.mimetype.split('/')[1])) {
         removeTempFile(file.tempFilePath);
-        throw new Error("UnsupportedFormat");
+        throw new Error('UnsupportedFormat');
         // return res.status(400).json({ message: 'UnsupportedFormat' });
       }
 
@@ -51,7 +52,7 @@ const FileUploadChecker = async (
         parseInt(process.env.MAX_FILE_SIZE as string) * 1024 * 1024
       ) {
         removeTempFile(file.tempFilePath);
-        throw new Error("FileSizeIsTooLarge");
+        throw new Error('FileSizeIsTooLarge');
         // return res.status(400).json({ message: 'FileSizeIsTooLarge' });
       }
       next();
