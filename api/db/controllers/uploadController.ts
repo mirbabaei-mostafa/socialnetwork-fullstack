@@ -28,7 +28,7 @@ export const uploadImages = async (
     const foundUser = await userModel.findOne<UserSchema | undefined>({
       refresh_token: authToken,
     });
-    // Email address dose not exit
+    // User dose not exit
     if (!foundUser) {
       return res.status(401).json({ error: 'UserDoseNotExist' });
     }

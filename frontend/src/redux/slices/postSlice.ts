@@ -57,10 +57,10 @@ export const createPost = createAsyncThunk(
       if (postInfo.formData) {
         imgResp = await axiosPrivate.post(
           '/post/uploadImages',
-          JSON.stringify({
-            body: postInfo.formData,
-          }),
-          // postInfo.formData,
+          // JSON.stringify({
+          //   body: postInfo.formData,
+          // }),
+          postInfo.formData,
           {
             // onUploadProgress: (ProgressEvent) =>
             //   console.log(ProgressEvent.progress),

@@ -26,7 +26,6 @@ const FileUploadChecker = async (
   next: NextFunction
 ) => {
   const uploaderFiles: UploadedFile[] = req.body.files;
-  console.log(req);
   if (!uploaderFiles || Object.values(uploaderFiles).flat().length === 0) {
     // if (!req.body.file || Object.values(req.body.file).flat().length === 0) {
     // return res.status(400).json({ message: 'NoFileHasBeenSelected' });
@@ -40,7 +39,7 @@ const FileUploadChecker = async (
   try {
     files.forEach((file) => {
       // Checking file's format
-      if (!fileTypes.includes(file.mimetype.split('/')[1])) {
+      if (!fileTypes.includes((file.mimetype as string).split('/')[1])) {
         removeTempFile(file.tempFilePath);
         throw new Error('UnsupportedFormat');
         // return res.status(400).json({ message: 'UnsupportedFormat' });
@@ -58,6 +57,7 @@ const FileUploadChecker = async (
       next();
     });
   } catch (err: any) {
+    console.log(err.message);
     return res.status(500).json({ message: err.message });
   }
 };
